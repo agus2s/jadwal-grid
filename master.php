@@ -1,0 +1,211 @@
+<?php
+/**
+ * master.php — Halaman Data Master (Guru / Mata Pelajaran / Rombel)
+ * -----------------------------------------------------------------
+ * Satu halaman ini menangani TIGA tabel master sekaligus,
+ * ditentukan oleh query string ?type=teachers|subjects|classes
+ *
+ * Fitur:
+ *   - Tambah data (INSERT)
+ *   - Edit data (UPDATE)
+ *   - Hapus data (DELETE)
+ */
+
+require __DIR__ . '/config/database.php'; // Koneksi database
+$pdo  = db();
+
+// Baca parameter ?type dari URL; default ke 'teachers' jika tidak ada
+$type = $_GET['type'] ?? 'teachers';
+
+/**
+ * $m — Konfigurasi semua tabel master.
+ *
+ * Struktur: 'nama_tabel' => ['Judul Halaman', ['kolom_db' => 'Label Form'], 'icon-bi']
+ *
+ * Dengan satu array ini, halaman bisa menangani semua tabel
+ * tanpa perlu menulis kode terpisah per tabel.
+ */
+$m = [
+    'teachers' => ['Guru',            ['code' => 'Kode', 'name' => 'Nama Guru', 'nip' => 'NIP'], 'bi-person-badge'],
+    'subjects' => ['Mata Pelajaran',  ['code' => 'Kode', 'name' => 'Nama Mapel'],                'bi-book'],
+    'classes'  => ['Rombel / Ruang',  ['name' => 'Nama Rombel'],                                  'bi-building'],
+];
+
+// Jika $type tidak ada dalam daftar, hentikan program dengan pesan error
+if (!isset($m[$type])) die('Master tidak ditemukan');
+
+// Destructuring: ambil judul, daftar field, dan ikon dari konfigurasi
+[$title, $fields, $icon] = $m[$type];
+
+$err     = null; // Menampung pesan error dari try/catch
+$editRow = null; // Menampung baris yang sedang diedit (null = mode tambah)
+
+// ─────────────────────────────────────────────────
+// HAPUS DATA
+// Dipicu oleh link: ?type=teachers&delete=5
+// ─────────────────────────────────────────────────
+if (isset($_GET['delete'])) {
+    // Prepared statement: (int) mencegah SQL injection dengan memastikan ID berupa angka
+    $pdo->prepare("DELETE FROM $type WHERE id=?")->execute([(int) $_GET['delete']]);
+    // Redirect kembali ke halaman yang sama setelah hapus (PRG pattern)
+    header("Location: master.php?type=$type");
+    exit;
+}
+
+// ─────────────────────────────────────────────────
+// LOAD DATA UNTUK DIEDIT
+// Dipicu oleh link: ?type=teachers&edit=5
+// ─────────────────────────────────────────────────
+if (isset($_GET['edit'])) {
+    $stmt = $pdo->prepare("SELECT * FROM $type WHERE id=?");
+    $stmt->execute([(int) $_GET['edit']]);
+    $editRow = $stmt->fetch(); // Simpan baris ke $editRow; form akan diisi otomatis
+}
+
+// ─────────────────────────────────────────────────
+// SIMPAN DATA (INSERT atau UPDATE)
+// Dipicu saat form di-submit (method POST)
+// ─────────────────────────────────────────────────
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    try {
+        /**
+         * Kumpulkan nilai dari form ke array $v.
+         * Key = nama kolom DB, Value = input user (sudah di-trim).
+         * Loop berdasarkan $fields agar hanya kolom yang relevan yang diproses.
+         */
+        $v = [];
+        foreach ($fields as $f => $l) {
+            $v[$f] = trim($_POST[$f] ?? '');
+        }
+
+        // Cek apakah ini mode EDIT (hidden field edit_id > 0) atau mode TAMBAH
+        $editId = (int)($_POST['edit_id'] ?? 0);
+
+        if ($editId > 0) {
+            // ── UPDATE ──
+            // Bangun "code=?, name=?, nip=?" secara dinamis dari array $v
+            $setParts = implode(', ', array_map(fn($f) => "$f=?", array_keys($v)));
+            $pdo->prepare("UPDATE $type SET $setParts WHERE id=?")
+                // array_values($v) → nilai field, $editId → nilai WHERE id
+                ->execute([...array_values($v), $editId]);
+        } else {
+            // ── INSERT ──
+            $pdo->prepare(
+                "INSERT INTO $type(" . implode(',', array_keys($v)) . ") VALUES(" .
+                implode(',', array_fill(0, count($v), '?')) . ")"
+            )->execute(array_values($v));
+        }
+
+        // Redirect setelah berhasil simpan (PRG pattern)
+        header("Location: master.php?type=$type");
+        exit;
+
+    } catch (Throwable $e) {
+        // Tangkap semua error (termasuk pelanggaran UNIQUE constraint dari DB)
+        $err = $e->getMessage();
+    }
+}
+
+// Ambil semua baris dari tabel yang aktif, diurutkan alfabetis
+$rows = $pdo->query("SELECT * FROM $type ORDER BY name")->fetchAll();
+
+require __DIR__ . '/templates/header.php'; // Render header HTML
+?>
+
+<h3 class="page-heading">
+    <i class="bi <?= $icon ?>"></i> <?= $title ?>
+</h3>
+
+<?php if ($err): ?>
+    <!-- Tampilkan pesan error jika ada (misal: kode sudah dipakai) -->
+    <div class="alert alert-danger d-flex align-items-center gap-2">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <?= e($err) ?>
+    </div>
+<?php endif; ?>
+
+<!--
+    FORM — berfungsi ganda:
+    - Mode TAMBAH : edit_id tidak ada → tombol "Tambah", form kosong
+    - Mode EDIT   : edit_id ada       → tombol "Simpan" + "Batal", form terisi
+-->
+<form method="post" class="card card-body shadow-sm mb-3 row g-2">
+
+    <?php if ($editRow): ?>
+        <!--
+            Hidden field: menyimpan ID record yang diedit.
+            Dikirim bersama form POST agar server tahu ini UPDATE, bukan INSERT.
+        -->
+        <input type="hidden" name="edit_id" value="<?= $editRow['id'] ?>">
+    <?php endif; ?>
+
+    <?php foreach ($fields as $f => $l): ?>
+        <!-- Loop field: render satu input per kolom (code, name, nip, dst.) -->
+        <div class="col-md-4">
+            <label><?= $l ?></label>
+            <input class="form-control" name="<?= $f ?>"
+                   value="<?= $editRow ? e($editRow[$f]) : '' ?>">
+        </div>
+    <?php endforeach; ?>
+
+    <div class="col-md-2 d-flex align-items-end gap-2">
+        <?php if ($editRow): ?>
+            <button class="btn btn-primary mt-4">
+                <i class="bi bi-check-lg me-1"></i>Simpan
+            </button>
+            <!-- Tombol Batal: kembali ke URL tanpa parameter edit -->
+            <a href="master.php?type=<?= $type ?>" class="btn btn-secondary mt-4">
+                <i class="bi bi-x-lg me-1"></i>Batal
+            </a>
+        <?php else: ?>
+            <button class="btn btn-success mt-4">
+                <i class="bi bi-plus-lg me-1"></i>Tambah
+            </button>
+        <?php endif; ?>
+    </div>
+</form>
+
+<!-- Tabel daftar semua data -->
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table mb-0">
+            <tr>
+                <th>No</th>
+                <?php foreach ($fields as $l): ?>
+                    <th><?= $l ?></th>
+                <?php endforeach; ?>
+                <th>Aksi</th>
+            </tr>
+
+            <?php foreach ($rows as $i => $r): ?>
+                <!--
+                    Highlight baris kuning jika ID-nya sama dengan yang sedang diedit,
+                    sehingga user tahu baris mana yang sedang dimodifikasi.
+                -->
+                <tr <?= ($editRow && $editRow['id'] == $r['id']) ? 'class="table-warning"' : '' ?>>
+                    <td style="color:#a0aec0;font-size:.8rem;"><?= $i + 1 ?></td>
+
+                    <?php foreach ($fields as $f => $l): ?>
+                        <td><?= e($r[$f]) ?></td>
+                    <?php endforeach; ?>
+
+                    <td class="d-flex gap-1">
+                        <!-- Tombol Edit: arahkan ke ?edit=ID agar form terisi -->
+                        <a class="btn btn-sm btn-outline-primary"
+                           href="?type=<?= $type ?>&edit=<?= $r['id'] ?>">
+                            <i class="bi bi-pencil-square me-1"></i>Edit
+                        </a>
+                        <!-- Tombol Hapus: konfirmasi dulu sebelum menghapus -->
+                        <a class="btn btn-sm btn-outline-danger"
+                           href="?type=<?= $type ?>&delete=<?= $r['id'] ?>"
+                           onclick="return confirm('Hapus?')">
+                            <i class="bi bi-trash3 me-1"></i>Hapus
+                        </a>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </table>
+    </div>
+</div>
+
+<?php require __DIR__ . '/templates/footer.php'; ?>

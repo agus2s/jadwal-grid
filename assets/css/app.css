@@ -1,0 +1,253 @@
+/* ── Base ─────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+*,*::before,*::after{box-sizing:border-box}
+
+body {
+    background: #f0f4f8;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    color: #1a2332;
+}
+
+/* ── Navbar ──────────────────────────────────────── */
+.navbar {
+    background: linear-gradient(135deg, #006b2e 0%, #009a44 60%, #00c95a 100%) !important;
+    box-shadow: 0 2px 12px rgba(0,154,68,.35);
+    padding: 0.6rem 1.2rem;
+}
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: .3px;
+}
+.navbar .text-white {
+    font-size: .8rem;
+    opacity: .8;
+}
+
+/* ── Sidebar ─────────────────────────────────────── */
+aside .list-group {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,.07);
+}
+aside .list-group-item {
+    border: none;
+    border-bottom: 1px solid #e8edf2;
+    padding: .65rem 1rem;
+    font-size: .85rem;
+    font-weight: 500;
+    color: #4a5568;
+    transition: background .18s, color .18s, padding-left .18s;
+}
+aside .list-group-item:last-child { border-bottom: none; }
+aside .list-group-item:hover,
+aside .list-group-item.active {
+    background: linear-gradient(90deg, #e6f9ee, #f0fdf6);
+    color: #006b2e;
+    padding-left: 1.3rem;
+}
+
+/* ── Cards ───────────────────────────────────────── */
+.card {
+    border: none;
+    border-radius: 14px;
+    box-shadow: 0 2px 12px rgba(0,0,0,.07);
+}
+
+/* ── Buttons ─────────────────────────────────────── */
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: .83rem;
+    transition: transform .12s, box-shadow .12s;
+}
+.btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,.15); }
+.btn:active { transform: translateY(0); }
+.btn-success {
+    background: linear-gradient(135deg, #006b2e, #009a44);
+    border: none;
+}
+.btn-success:hover { background: linear-gradient(135deg, #005a25, #007d37); }
+
+/* ── Form controls ───────────────────────────────── */
+.form-control, .form-select {
+    border-radius: 8px;
+    border: 1.5px solid #d1dbe8;
+    font-size: .85rem;
+    transition: border-color .18s, box-shadow .18s;
+}
+.form-control:focus, .form-select:focus {
+    border-color: #009a44;
+    box-shadow: 0 0 0 3px rgba(0,154,68,.15);
+}
+.form-label {
+    font-weight: 600;
+    font-size: .78rem;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    color: #718096;
+    margin-bottom: .3rem;
+}
+
+/* ── Tables ──────────────────────────────────────── */
+.table { font-size: .85rem; }
+.table thead th {
+    background: #f7fafc;
+    font-weight: 600;
+    font-size: .78rem;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    color: #718096;
+    border-bottom: 2px solid #e2e8f0;
+    padding: .8rem 1rem;
+}
+.table td { padding: .75rem 1rem; vertical-align: middle; }
+.table-hover tbody tr:hover { background: #f0fdf6; }
+
+/* ── Schedule grid ───────────────────────────────── */
+
+/*
+ * Wrapper scroll dua arah untuk tabel grid jadwal.
+ * max-height  : batasi tinggi agar tidak memenuhi halaman (scroll vertikal)
+ * overflow    : auto → tampilkan scrollbar hanya jika konten meluap
+ * border-radius: ikuti kartu induk
+ */
+.grid-scroll-wrapper {
+    max-height: 75vh;          /* ~75% tinggi viewport; cukup untuk lihat jadwal tanpa halaman membesar */
+    overflow: auto;            /* scroll X (lebar 12 rombel) + scroll Y (54 baris = 6 hari × 9 JP) */
+    border-radius: 14px;
+    position: relative;        /* diperlukan sebagai stacking context untuk sticky children */
+}
+
+/*
+ * Sticky thead — header kolom (nama rombel) tetap terlihat
+ * meski pengguna scroll ke bawah.
+ * z-index 10 agar melayang di atas sel-sel tbody.
+ */
+.grid-sticky-head th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: #f7fafc;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+/*
+ * Sticky kolom kiri — kolom "Hari / JP" tetap terlihat
+ * meski pengguna scroll ke kanan melewati 12 rombel.
+ * z-index 11 pada thead agar pojok kiri-atas (Hari / JP) melayang
+ * di atas SEMUA arah (sticky X + sticky Y sekaligus).
+ */
+.grid-sticky-col {
+    position: sticky;
+    left: 0;
+    z-index: 5;                /* di atas td biasa, di bawah thead */
+    background: inherit;       /* ambil warna latar dari baris (warna hari) */
+    box-shadow: 2px 0 6px rgba(0,0,0,.06);  /* bayangan tipis pemisah kolom sticky */
+}
+
+/* Pojok kiri-atas: sticky di sumbu X (left:0) DAN sumbu Y (top:0) */
+.grid-sticky-head .grid-sticky-col {
+    z-index: 15;               /* tertinggi: melayang di atas semua */
+    background: #f7fafc;
+}
+
+/* ── Scrollbar styling (Webkit: Chrome, Edge, Safari) ── */
+.grid-scroll-wrapper::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+.grid-scroll-wrapper::-webkit-scrollbar-track {
+    background: #f0f4f8;
+    border-radius: 4px;
+}
+.grid-scroll-wrapper::-webkit-scrollbar-thumb {
+    background: #c1cdd8;
+    border-radius: 4px;
+}
+.grid-scroll-wrapper::-webkit-scrollbar-thumb:hover {
+    background: #009a44;
+}
+.grid-scroll-wrapper::-webkit-scrollbar-corner {
+    background: #f0f4f8;   /* pojok pertemuan scrollbar X dan Y */
+}
+
+.schedule-cell {
+    min-width: 150px;
+    height: 80px;
+    vertical-align: top;
+    padding: .5rem !important;
+    transition: background .15s;
+}
+.schedule-cell:hover { background: #f0fdf6 !important; }
+.cell-entry {
+    display: inline-block;
+    background: linear-gradient(135deg, #e6f9ee, #d4f5e2);
+    border-left: 3px solid #009a44;
+    border-radius: 6px;
+    padding: .3rem .5rem;
+    font-size: .78rem;
+    line-height: 1.3;
+    width: 100%;
+}
+.cell-entry strong { color: #006b2e; display: block; }
+.cell-entry small  { color: #4a5568; }
+
+/* Day row header colours */
+.day-senin   { background: #ebf4ff !important; color: #2b6cb0 !important; }
+.day-selasa  { background: #faf5ff !important; color: #6b46c1 !important; }
+.day-rabu    { background: #f0fff4 !important; color: #276749 !important; }
+.day-kamis   { background: #fffaf0 !important; color: #c05621 !important; }
+.day-jumat   { background: #fff5f5 !important; color: #c53030 !important; }
+.day-sabtu   { background: #f7fafc !important; color: #4a5568 !important; }
+
+/* ── Day badge (list view) ───────────────────────── */
+.badge-hari {
+    display: inline-block;
+    padding: .25em .6em;
+    border-radius: 6px;
+    font-size: .75rem;
+    font-weight: 600;
+}
+
+/* ── View switcher ───────────────────────────────── */
+.view-switcher .btn { border-radius: 8px; font-size: .8rem; }
+.view-switcher .btn.active-view {
+    background: linear-gradient(135deg,#006b2e,#009a44);
+    color: #fff;
+    border-color: transparent;
+}
+
+/* ── Alert ───────────────────────────────────────── */
+.alert {
+    border: none;
+    border-radius: 10px;
+    font-size: .85rem;
+    font-weight: 500;
+}
+.alert-danger  { background: #fff5f5; color: #c53030; border-left: 4px solid #fc8181; }
+.alert-success { background: #f0fff4; color: #276749; border-left: 4px solid #68d391; }
+
+/* ── Page heading ────────────────────────────────── */
+.page-heading {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a2332;
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+}
+.page-heading::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 1.25rem;
+    background: linear-gradient(#006b2e, #009a44);
+    border-radius: 2px;
+}
+
+/* ── Misc ────────────────────────────────────────── */
+.table-warning td, .table-warning th { background: #fffde7 !important; }
