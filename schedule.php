@@ -366,4 +366,96 @@ require __DIR__ . '/templates/header.php'; // Render header HTML
 
 <?php endif; ?>
 
+<script>
+/**
+ * Fungsi: Populate form dari grid cell kosong
+ * 
+ * Ketika user klik cell kosong di grid, otomatis isi:
+ * - Dropdown Hari (day)
+ * - Dropdown JP (jp)
+ * - Dropdown Rombel (class_id)
+ * 
+ * Lalu fokus ke dropdown Guru (teacher_id)
+ */
+document.addEventListener('DOMContentLoaded', function() {
+    <?php if ($view === 'grid'): ?>
+    
+    // Ambil semua cells yang kosong (tidak memiliki child .cell-entry)
+    document.querySelectorAll('.schedule-cell').forEach(cell => {
+        // Hanya tambah click handler ke cell yang kosong
+        if (!cell.querySelector('.cell-entry')) {
+            cell.style.cursor = 'pointer';
+            cell.style.transition = 'background 0.2s';
+            
+            cell.addEventListener('click', function() {
+                // Ambil data dari row header (kolom pertama)
+                const row = cell.closest('tr');
+                const rowHeaderCell = row.querySelector('.grid-sticky-col');
+                
+                // Extract hari dan JP dari text rowHeader
+                // Format: "Senin\nJP 1" (dengan newline)
+                const headerText = rowHeaderCell.innerText;
+                const lines = headerText.split('\n');
+                const hari = lines[0].trim();  // "Senin"
+                const jpMatch = lines[1].match(/JP (\d+)/);
+                const jp = jpMatch ? jpMatch[1] : null;
+                
+                // Ambil nama rombel dari header kolom (thead)
+                const colIndex = Array.from(row.querySelectorAll('td')).indexOf(cell);
+                const thead = document.querySelector('.grid-sticky-head tr');
+                const thElements = thead.querySelectorAll('th');
+                // Header index = colIndex + 1 (karena ada sticky col di awal)
+                const classNameHeader = thElements[colIndex + 1];
+                const rombel = classNameHeader ? classNameHeader.innerText.trim() : null;
+                
+                if (hari && jp && rombel) {
+                    // Set dropdown nilai
+                    const daySelect = document.querySelector('select[name="day"]');
+                    const jpSelect = document.querySelector('select[name="jp"]');
+                    const classSelect = document.querySelector('select[name="class_id"]');
+                    const teacherSelect = document.querySelector('select[name="teacher_id"]');
+                    
+                    // Set hari
+                    daySelect.value = hari;
+                    
+                    // Set JP
+                    jpSelect.value = jp;
+                    
+                    // Set rombel (cari option dengan text yang cocok)
+                    for (let option of classSelect.options) {
+                        if (option.text.trim() === rombel) {
+                            classSelect.value = option.value;
+                            break;
+                        }
+                    }
+                    
+                    // Scroll ke form
+                    const form = document.querySelector('form');
+                    form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    
+                    // Focus ke dropdown mata pelajaran
+                    const subjectSelect = document.querySelector('select[name="subject_id"]');
+                    setTimeout(() => {
+                        subjectSelect.focus();
+                    }, 300);
+                }
+            });
+            
+            // Visual feedback saat hover
+            cell.addEventListener('mouseover', function() {
+                if (!this.querySelector('.cell-entry')) {
+                    this.style.background = 'rgba(0, 154, 68, 0.08)';
+                }
+            });
+            
+            cell.addEventListener('mouseout', function() {
+                this.style.background = '';
+            });
+        }
+    });
+    
+    <?php endif; ?>
+});
+</script>
+
 <?php require __DIR__ . '/templates/footer.php'; ?>
