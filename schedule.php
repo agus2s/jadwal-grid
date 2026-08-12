@@ -143,17 +143,29 @@ require __DIR__ . '/templates/header.php'; // Render header HTML
     </div>
 </div>
 
-<!-- ─── Pesan error / sukses ─── -->
-<?php if ($err): ?>
-    <div class="alert alert-danger d-flex align-items-center gap-2 mb-3">
-        <i class="bi bi-exclamation-triangle-fill"></i> <?= e($err) ?>
-    </div>
-<?php endif; ?>
-<?php if ($ok): ?>
-    <div class="alert alert-success d-flex align-items-center gap-2 mb-3">
-        <i class="bi bi-check-circle-fill"></i> <?= e($ok) ?>
-    </div>
-<?php endif; ?>
+<!-- ─── Pesan error / sukses (toast kanan bawah) ─── -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1080;">
+    <?php if ($err): ?>
+        <div class="toast align-items-center text-white bg-danger border-0 show" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="4000">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i><?= e($err) ?>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    <?php endif; ?>
+    <?php if ($ok): ?>
+        <div class="toast align-items-center text-white bg-success border-0 show" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="4000">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="bi bi-check-circle-fill me-2"></i><?= e($ok) ?>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    <?php endif; ?>
+</div>
 
 <!-- ─── Form Tambah Jadwal ─── -->
 <div class="card mb-3">
@@ -368,16 +380,43 @@ require __DIR__ . '/templates/header.php'; // Render header HTML
 
 <script>
 /**
- * Fungsi: Populate form dari grid cell kosong
- * 
- * Ketika user klik cell kosong di grid, otomatis isi:
- * - Dropdown Hari (day)
- * - Dropdown JP (jp)
- * - Dropdown Rombel (class_id)
- * 
- * Lalu fokus ke dropdown Guru (teacher_id)
+ * Simpan posisi scroll grid sebelum submit form.
+ * Saat halaman dimuat ulang setelah tambah jadwal, posisi ini dipulihkan.
  */
 document.addEventListener('DOMContentLoaded', function() {
+    const scrollStorageKey = 'jadwal-grid-scroll';
+    const form = document.querySelector('form[method="post"]');
+    const gridWrapper = document.querySelector('.grid-scroll-wrapper');
+
+    if (form) {
+        form.addEventListener('submit', function() {
+            const scrollState = {
+                x: gridWrapper ? gridWrapper.scrollLeft : window.scrollX,
+                y: gridWrapper ? gridWrapper.scrollTop : window.scrollY,
+                view: window.location.search.includes('view=grid') ? 'grid' : 'list'
+            };
+            sessionStorage.setItem(scrollStorageKey, JSON.stringify(scrollState));
+        });
+    }
+
+    const saved = sessionStorage.getItem(scrollStorageKey);
+    if (saved) {
+        try {
+            const scrollState = JSON.parse(saved);
+            if (scrollState.view === 'grid' && gridWrapper) {
+                requestAnimationFrame(function() {
+                    gridWrapper.scrollLeft = scrollState.x || 0;
+                    gridWrapper.scrollTop = scrollState.y || 0;
+                });
+            } else {
+                window.scrollTo(scrollState.x || 0, scrollState.y || 0);
+            }
+            sessionStorage.removeItem(scrollStorageKey);
+        } catch (e) {
+            sessionStorage.removeItem(scrollStorageKey);
+        }
+    }
+
     <?php if ($view === 'grid'): ?>
     
     // Ambil semua cells yang kosong (tidak memiliki child .cell-entry)
@@ -413,7 +452,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     const daySelect = document.querySelector('select[name="day"]');
                     const jpSelect = document.querySelector('select[name="jp"]');
                     const classSelect = document.querySelector('select[name="class_id"]');
-                    const teacherSelect = document.querySelector('select[name="teacher_id"]');
                     
                     // Set hari
                     daySelect.value = hari;
