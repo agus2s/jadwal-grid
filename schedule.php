@@ -291,10 +291,20 @@ require __DIR__ . '/templates/header.php'; // Render header HTML
                                             (int)$r['jp']        === $jp &&
                                             (int)$r['class_id']  === (int)$cl['id']
                                         ): ?>
-                                            <!-- Sel berisi: nama mapel (tebal) + nama guru (kecil) -->
-                                            <div class="cell-entry">
-                                                <strong><?= e($r['subject_name']) ?></strong>
-                                                <small><?= e($r['teacher_name']) ?></small>
+                                            <!-- Sel berisi: nama mapel + guru, dengan tombol hapus yang muncul saat diklik -->
+                                            <div class="cell-entry" data-schedule-id="<?= (int) $r['id'] ?>">
+                                                <div class="d-flex align-items-center justify-content-between gap-2">
+                                                    <div class="text-start">
+                                                        <strong><?= e($r['subject_name']) ?></strong>
+                                                        <small class="d-block"><?= e($r['teacher_name']) ?></small>
+                                                    </div>
+                                                    <a class="btn btn-link btn-sm text-danger p-0 delete-cell-btn"
+                                                       href="?delete=<?= (int) $r['id'] ?>"
+                                                       onclick="return confirm('Hapus jadwal ini?')"
+                                                       style="display:none; font-size:.7rem; line-height:1;">
+                                                        <i class="bi bi-trash3"></i>
+                                                    </a>
+                                                </div>
                                             </div>
                                         <?php endif;
                                     endforeach; ?>
@@ -479,7 +489,31 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     <?php if ($view === 'grid'): ?>
-    
+
+    document.querySelectorAll('.cell-entry').forEach(function(entry) {
+        const deleteBtn = entry.querySelector('.delete-cell-btn');
+        if (!deleteBtn) return;
+
+        entry.addEventListener('click', function(event) {
+            if (event.target.closest('a')) return;
+
+            document.querySelectorAll('.cell-entry').forEach(function(otherEntry) {
+                const otherBtn = otherEntry.querySelector('.delete-cell-btn');
+                if (otherBtn) otherBtn.style.display = 'none';
+                otherEntry.classList.remove('is-active');
+            });
+
+            this.classList.add('is-active');
+            deleteBtn.style.display = 'inline-flex';
+        });
+
+        entry.addEventListener('mouseleave', function() {
+            if (!this.classList.contains('is-active')) {
+                deleteBtn.style.display = 'none';
+            }
+        });
+    });
+
     // Ambil semua cells yang kosong (tidak memiliki child .cell-entry)
     document.querySelectorAll('.schedule-cell').forEach(cell => {
         // Hanya tambah click handler ke cell yang kosong

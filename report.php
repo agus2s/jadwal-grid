@@ -99,9 +99,11 @@ foreach ($stmt->fetchAll() as $row) {
                                     <tr>
                                         <td class="fw-semibold text-start"><?= e($row['subject']) ?></td>
                                         <?php foreach ($classNames as $className): ?>
-                                            <td><?= (int) ($row['per_class'][$className] ?? 0) ?></td>
+                                            <?php $subjectValue = (int) ($row['per_class'][$className] ?? 0); ?>
+                                            <td><?= $subjectValue > 0 ? $subjectValue : '' ?></td>
                                         <?php endforeach; ?>
-                                        <td class="fw-bold text-success"><?= (int) $row['total'] ?></td>
+                                        <?php $subjectTotal = (int) $row['total']; ?>
+                                        <td class="fw-bold text-success"><?= $subjectTotal > 0 ? $subjectTotal : '' ?></td>
                                     </tr>
                                 <?php endforeach; ?>
                             <?php else: ?>
@@ -131,14 +133,26 @@ foreach ($stmt->fetchAll() as $row) {
                         </thead>
                         <tbody>
                             <?php if ($teacherReport): ?>
-                                <?php foreach ($teacherReport as $row): ?>
+                                <?php $teacherRows = array_values($teacherReport); ?>
+                                <?php foreach ($teacherRows as $index => $row): ?>
+                                    <?php $sameTeacherAsPrevious = $index > 0 && $teacherRows[$index - 1]['teacher'] === $row['teacher']; ?>
+                                    <?php $teacherRowSpan = 1; ?>
+                                    <?php if (!$sameTeacherAsPrevious): ?>
+                                        <?php for ($j = $index + 1; $j < count($teacherRows) && $teacherRows[$j]['teacher'] === $row['teacher']; $j++): ?>
+                                            <?php $teacherRowSpan++; ?>
+                                        <?php endfor; ?>
+                                    <?php endif; ?>
                                     <tr>
-                                        <td class="fw-semibold text-start"><?= e($row['teacher']) ?></td>
+                                        <?php if (!$sameTeacherAsPrevious): ?>
+                                            <td class="fw-semibold text-start" rowspan="<?= $teacherRowSpan ?>"><?= e($row['teacher']) ?></td>
+                                        <?php endif; ?>
                                         <td class="text-start"><?= e($row['subject']) ?></td>
                                         <?php foreach ($classNames as $className): ?>
-                                            <td><?= (int) ($row['per_class'][$className] ?? 0) ?></td>
+                                            <?php $teacherValue = (int) ($row['per_class'][$className] ?? 0); ?>
+                                            <td><?= $teacherValue > 0 ? $teacherValue : '' ?></td>
                                         <?php endforeach; ?>
-                                        <td class="fw-bold text-success"><?= (int) $row['total'] ?></td>
+                                        <?php $teacherTotal = (int) $row['total']; ?>
+                                        <td class="fw-bold text-success"><?= $teacherTotal > 0 ? $teacherTotal : '' ?></td>
                                     </tr>
                                 <?php endforeach; ?>
                             <?php else: ?>

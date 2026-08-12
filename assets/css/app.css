@@ -34,6 +34,27 @@ body {
     letter-spacing: .3px;
 }
 
+.navbar .nav-link {
+    padding: .5rem .8rem;
+    border-radius: 8px;
+    transition: background .15s ease, color .15s ease, box-shadow .15s ease;
+    opacity: .9;
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link:focus {
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff !important;
+    opacity: 1;
+}
+
+.navbar .nav-link.active-nav {
+    background: rgba(255, 255, 255, 0.18);
+    color: #fff !important;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+    opacity: 1;
+}
+
 .navbar .text-white {
     font-size: .8rem;
     opacity: .8;
@@ -92,12 +113,27 @@ aside .list-group-item.active {
 }
 
 .btn-success {
-    background: linear-gradient(135deg, #006b2e, #009a44);
+    background: #198754;
     border: none;
 }
 
-.btn-success:hover {
-    background: linear-gradient(135deg, #005a25, #007d37);
+.btn-success:hover,
+.btn-success:focus {
+    background: #157347;
+    border-color: #157347;
+}
+
+.btn-outline-success {
+    color: #198754;
+    border-color: #198754;
+    background: #fff;
+}
+
+.btn-outline-success:hover,
+.btn-outline-success:focus {
+    background: #198754;
+    border-color: #198754;
+    color: #fff;
 }
 
 /* ── Form controls ───────────────────────────────── */
@@ -236,9 +272,10 @@ aside .list-group-item.active {
 
 .schedule-cell {
     min-width: 150px;
-    height: 80px;
+    min-height: 52px;
+    height: auto;
     vertical-align: top;
-    padding: .5rem !important;
+    padding: .35rem !important;
     transition: background .15s;
 }
 
@@ -246,14 +283,20 @@ aside .list-group-item.active {
     background: #f0fdf6 !important;
 }
 
+.dashboard-cell {
+    min-height: 52px;
+    height: auto;
+    vertical-align: top;
+}
+
 .cell-entry {
     display: inline-block;
     background: linear-gradient(135deg, #e6f9ee, #d4f5e2);
     border-left: 3px solid #009a44;
     border-radius: 4px;
-    padding: .3rem .5rem;
+    padding: .2rem .4rem;
     font-size: .78rem;
-    line-height: 1.3;
+    line-height: 1.2;
     width: 100%;
 }
 
@@ -313,7 +356,7 @@ aside .list-group-item.active {
 }
 
 .view-switcher .btn.active-view {
-    background: linear-gradient(135deg, #006b2e, #009a44);
+    background: #198754;
     color: #fff;
     border-color: transparent;
 }

@@ -1,4 +1,18 @@
-<?php $title=$title??'Jadwal MA Syamsul Huda';?>
+<?php
+$title = $title ?? 'Jadwal MA Syamsul Huda';
+$currentPage = basename($_SERVER['PHP_SELF'] ?? 'index.php');
+$activeNav = '';
+
+if ($currentPage === 'index.php') {
+    $activeNav = 'dashboard';
+} elseif ($currentPage === 'report.php') {
+    $activeNav = 'report';
+} elseif ($currentPage === 'master.php') {
+    $activeNav = 'master';
+} elseif ($currentPage === 'schedule.php') {
+    $activeNav = 'schedule';
+}
+?>
 <!doctype html><html lang=id>
     <head>
         <meta charset=utf-8>
@@ -18,17 +32,17 @@
                     </a>
                 </div>
                 <div class="d-flex align-items-center gap-3">
-                    <a class="nav-link text-white fw-semibold" href=index.php>
+                    <a class="nav-link text-white fw-semibold <?= $activeNav === 'dashboard' ? 'active-nav' : '' ?>" href=index.php>
                         <i class="bi bi-speedometer2 me-1"></i>Dashboard
                     </a>
-                    <a class="nav-link text-white fw-semibold" href=report.php>
+                    <a class="nav-link text-white fw-semibold <?= $activeNav === 'report' ? 'active-nav' : '' ?>" href=report.php>
                         <i class="bi bi-clipboard-data me-1"></i>Rekap
                     </a>
-                    <a class="nav-link text-white fw-semibold" href="master.php?type=teachers">
+                    <a class="nav-link text-white fw-semibold <?= $activeNav === 'master' ? 'active-nav' : '' ?>" href="master.php?type=teachers">
                         <i class="bi bi-gear me-1"></i>Master
                     </a>
-                    <a class="nav-link text-white fw-semibold" href=schedule.php>
-                        <i class="bi bi-calendar-plus me-1"></i>Penyusunan Jadwal
+                    <a class="nav-link text-white fw-semibold <?= $activeNav === 'schedule' ? 'active-nav' : '' ?>" href=schedule.php>
+                        <i class="bi bi-calendar-plus me-1"></i>Penyusunan
                     </a>
                 </div>
             </div>

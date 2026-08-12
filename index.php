@@ -179,7 +179,7 @@ if ($tab === 'rombel' && $selected_class_id) {
                             <tr>
                                 <td class="fw-bold text-success bg-light">JP <?= $jp ?></td>
                                 <?php foreach ($days as $d): ?>
-                                    <td class="p-2" style="height: 75px; vertical-align: top;">
+                                    <td class="dashboard-cell p-2">
                                         <?php
                                         $cell_found = false;
                                         foreach ($rows as $r) {
