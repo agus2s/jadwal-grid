@@ -112,6 +112,21 @@ $rows = $pdo->query("SELECT * FROM $type ORDER BY name")->fetchAll();
 require __DIR__ . '/templates/header.php'; // Render header HTML
 ?>
 
+<div class="card shadow-sm mb-3">
+    <div class="card-body p-2">
+        <ul class="nav nav-pills nav-fill gap-2">
+            <?php foreach ($m as $key => [$label, $fieldList, $menuIcon]): ?>
+                <li class="nav-item">
+                    <a class="nav-link py-2.5 <?= $type === $key ? 'active bg-success text-white' : 'text-secondary' ?>"
+                       href="?type=<?= $key ?>">
+                        <i class="bi <?= $menuIcon ?> me-2"></i><?= $label ?>
+                    </a>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+</div>
+
 <h3 class="page-heading">
     <i class="bi <?= $icon ?>"></i> <?= $title ?>
 </h3>
