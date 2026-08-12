@@ -127,9 +127,14 @@ require __DIR__ . '/templates/header.php'; // Render header HTML
     </div>
 </div>
 
-<h3 class="page-heading">
-    <i class="bi <?= $icon ?>"></i> <?= $title ?>
-</h3>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="page-heading mb-0">
+        <i class="bi <?= $icon ?>"></i> <?= $title ?>
+    </h3>
+    <a href="?type=<?= $type ?>&new=1" class="btn btn-success">
+        <i class="bi bi-plus-lg me-1"></i>Tambah
+    </a>
+</div>
 
 <?php if ($err): ?>
     <!-- Tampilkan pesan error jika ada (misal: kode sudah dipakai) -->
@@ -139,46 +144,41 @@ require __DIR__ . '/templates/header.php'; // Render header HTML
     </div>
 <?php endif; ?>
 
-<!--
-    FORM — berfungsi ganda:
-    - Mode TAMBAH : edit_id tidak ada → tombol "Tambah", form kosong
-    - Mode EDIT   : edit_id ada       → tombol "Simpan" + "Batal", form terisi
--->
-<form method="post" class="card card-body shadow-sm mb-3 row g-2">
+<div class="modal fade" id="masterModal" tabindex="-1" aria-labelledby="masterModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <form method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="masterModalLabel">
+                        <?= $editRow ? 'Edit ' . $title : 'Tambah ' . $title ?>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body row g-3">
+                    <?php if ($editRow): ?>
+                        <input type="hidden" name="edit_id" value="<?= $editRow['id'] ?>">
+                    <?php endif; ?>
 
-    <?php if ($editRow): ?>
-        <!--
-            Hidden field: menyimpan ID record yang diedit.
-            Dikirim bersama form POST agar server tahu ini UPDATE, bukan INSERT.
-        -->
-        <input type="hidden" name="edit_id" value="<?= $editRow['id'] ?>">
-    <?php endif; ?>
-
-    <?php foreach ($fields as $f => $l): ?>
-        <!-- Loop field: render satu input per kolom (code, name, nip, dst.) -->
-        <div class="col-md-4">
-            <label><?= $l ?></label>
-            <input class="form-control" name="<?= $f ?>"
-                   value="<?= $editRow ? e($editRow[$f]) : '' ?>">
+                    <?php foreach ($fields as $f => $l): ?>
+                        <div class="col-md-<?= count($fields) > 1 ? 6 : 12 ?>">
+                            <label class="form-label"><?= $l ?></label>
+                            <input class="form-control" name="<?= $f ?>"
+                                   value="<?= $editRow ? e($editRow[$f]) : '' ?>">
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-lg me-1"></i>Batal
+                    </button>
+                    <button class="btn btn-success">
+                        <i class="bi bi-check-lg me-1"></i><?= $editRow ? 'Simpan' : 'Tambah' ?>
+                    </button>
+                </div>
+            </form>
         </div>
-    <?php endforeach; ?>
-
-    <div class="col-md-2 d-flex align-items-end gap-2">
-        <?php if ($editRow): ?>
-            <button class="btn btn-primary mt-4">
-                <i class="bi bi-check-lg me-1"></i>Simpan
-            </button>
-            <!-- Tombol Batal: kembali ke URL tanpa parameter edit -->
-            <a href="master.php?type=<?= $type ?>" class="btn btn-secondary mt-4">
-                <i class="bi bi-x-lg me-1"></i>Batal
-            </a>
-        <?php else: ?>
-            <button class="btn btn-success mt-4">
-                <i class="bi bi-plus-lg me-1"></i>Tambah
-            </button>
-        <?php endif; ?>
     </div>
-</form>
+</div>
 
 <!-- Tabel daftar semua data -->
 <div class="card shadow-sm">
@@ -205,7 +205,7 @@ require __DIR__ . '/templates/header.php'; // Render header HTML
                     <?php endforeach; ?>
 
                     <td class="d-flex gap-1">
-                        <!-- Tombol Edit: arahkan ke ?edit=ID agar form terisi -->
+                        <!-- Tombol Edit: buka modal edit -->
                         <a class="btn btn-sm btn-outline-primary"
                            href="?type=<?= $type ?>&edit=<?= $r['id'] ?>">
                             <i class="bi bi-pencil-square me-1"></i>Edit
@@ -222,5 +222,14 @@ require __DIR__ . '/templates/header.php'; // Render header HTML
         </table>
     </div>
 </div>
+
+<?php if ($editRow || isset($_GET['new'])): ?>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const modal = new bootstrap.Modal(document.getElementById('masterModal'));
+        modal.show();
+    });
+</script>
+<?php endif; ?>
 
 <?php require __DIR__ . '/templates/footer.php'; ?>
