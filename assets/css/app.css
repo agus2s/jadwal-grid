@@ -1,6 +1,4 @@
 /* ── Base ─────────────────────────────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
 *,
 *::before,
 *::after {
@@ -9,10 +7,11 @@
 
 body {
     background: #f0f4f8;
-    font-family: 'Inter', sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     font-size: 0.9rem;
     color: #1a2332;
-    padding-top: 72px;
+    padding-top: 0;
+    margin: 0;
 }
 
 @media (max-width: 991.98px) {
@@ -23,9 +22,10 @@ body {
 
 /* ── Navbar ──────────────────────────────────────── */
 .navbar {
-    background: linear-gradient(135deg, #006b2e 0%, #009a44 60%, #00c95a 100%) !important;
-    box-shadow: 0 2px 12px rgba(0, 154, 68, .35);
+    background: #1f8a4c !important;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, .08);
     padding: 0.6rem 1.2rem;
+    margin-bottom: 0.75rem;
 }
 
 .navbar-brand {

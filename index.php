@@ -40,6 +40,7 @@ if ($tab === 'rombel' && $selected_class_id) {
     $stmt->execute([$year['id'] ?? 0, $selected_day]);
     $rows = $stmt->fetchAll();
 }
+
 ?>
 
 <h3 class="page-heading"><i class="bi bi-speedometer2"></i> Dashboard</h3>
@@ -82,7 +83,7 @@ if ($tab === 'rombel' && $selected_class_id) {
     <?php endforeach; ?>
 </div>
 
-<div class="mt-4 pt-3 border-top">
+<div class="mt-3 pt-2 border-top">
     <div class="d-flex align-items-center justify-content-between mb-4">
         <h3 class="page-heading mb-0"><i class="bi bi-calendar3"></i> Lihat Jadwal</h3>
         <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-3">

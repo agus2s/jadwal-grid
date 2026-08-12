@@ -10,7 +10,7 @@
         <link rel=stylesheet href="assets/css/app.css">
     </head>
     <body>
-        <nav class="navbar navbar-dark bg-success fixed-top">
+        <nav class="navbar navbar-dark bg-success">
             <div class=container-fluid>
                 <div class="d-flex align-items-center gap-2">
                     <a class="navbar-brand fw-bold" href=index.php>
@@ -19,15 +19,18 @@
                 </div>
                 <div class="d-flex align-items-center gap-3">
                     <a class="nav-link text-white fw-semibold" href=index.php>
-                        <i class="bi bi-speedometer2 me-1"></i>Dashboard (Lihat Jadwal)
+                        <i class="bi bi-speedometer2 me-1"></i>Dashboard
+                    </a>
+                    <a class="nav-link text-white fw-semibold" href=report.php>
+                        <i class="bi bi-clipboard-data me-1"></i>Rekap
                     </a>
                     <a class="nav-link text-white fw-semibold" href="master.php?type=teachers">
                         <i class="bi bi-gear me-1"></i>Master
                     </a>
                     <a class="nav-link text-white fw-semibold" href=schedule.php>
-                        <i class="bi bi-calendar-plus me-1"></i>Edit Jadwal
+                        <i class="bi bi-calendar-plus me-1"></i>Penyusunan Jadwal
                     </a>
                 </div>
             </div>
         </nav>
-        <div class=container-fluid py-3>
+        <div class=container-fluid py-2>
