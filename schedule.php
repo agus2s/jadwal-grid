@@ -311,6 +311,21 @@ require __DIR__ . '/templates/header.php'; // Render header HTML
      Menampilkan semua entri jadwal dalam bentuk tabel baris.
 ════════════════════════════════════════════════════════ -->
 <div class="card">
+    <div class="p-3 border-bottom">
+        <div class="row g-2 justify-content-end">
+            <div class="col-md-4 col-lg-3">
+                <label class="form-label mb-1" style="font-size:.75rem;text-transform:uppercase;letter-spacing:.4px;color:#718096;">
+                    Cari Jadwal
+                </label>
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text bg-white">
+                        <i class="bi bi-search"></i>
+                    </span>
+                    <input type="text" id="scheduleSearch" class="form-control" placeholder="Cari hari, rombel, mapel, guru...">
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="table-responsive">
         <table class="table table-hover mb-0">
             <thead>
@@ -327,7 +342,7 @@ require __DIR__ . '/templates/header.php'; // Render header HTML
             <tbody>
                 <?php if (empty($rows)): ?>
                     <!-- Tampilkan pesan jika belum ada jadwal sama sekali -->
-                    <tr>
+                    <tr class="empty-rows-message">
                         <td colspan="7" class="text-center py-5" style="color:#a0aec0;">
                             <div style="font-size:2rem;margin-bottom:.5rem;">📋</div>
                             Belum ada jadwal. Tambahkan melalui form di atas.
@@ -337,10 +352,13 @@ require __DIR__ . '/templates/header.php'; // Render header HTML
                     <?php foreach ($rows as $i => $r):
                         // Ambil warna badge sesuai hari; fallback ke warna abu-abu
                         $dc = $dayColors[$r['day']] ?? ['badge' => '#718096'];
+                        $searchText = strtolower($r['day'] . ' ' . $r['class_name'] . ' ' . $r['subject_name'] . ' ' . $r['teacher_name'] . ' jp ' . $r['jp']);
                     ?>
-                        <tr>
+                        <tr class="schedule-row" data-search="<?= e($searchText) ?>">
                             <!-- Nomor urut (1-based, bukan ID database) -->
-                            <td style="color:#a0aec0;font-size:.8rem;"><?= $i + 1 ?></td>
+                            <td style="color:#a0aec0;font-size:.8rem;">
+                                <?= $i + 1 ?>
+                            </td>
 
                             <!-- Badge hari berwarna sesuai $dayColors -->
                             <td>
@@ -370,6 +388,12 @@ require __DIR__ . '/templates/header.php'; // Render header HTML
                             </td>
                         </tr>
                     <?php endforeach; ?>
+                    <tr class="no-results-row d-none">
+                        <td colspan="7" class="text-center py-5" style="color:#a0aec0;">
+                            <div style="font-size:2rem;margin-bottom:.5rem;">🔎</div>
+                            Tidak ada jadwal yang cocok dengan pencarian.
+                        </td>
+                    </tr>
                 <?php endif; ?>
             </tbody>
         </table>
@@ -387,6 +411,31 @@ document.addEventListener('DOMContentLoaded', function() {
     const scrollStorageKey = 'jadwal-grid-scroll';
     const form = document.querySelector('form[method="post"]');
     const gridWrapper = document.querySelector('.grid-scroll-wrapper');
+    const searchInput = document.getElementById('scheduleSearch');
+
+    if (searchInput) {
+        const rows = Array.from(document.querySelectorAll('.schedule-row'));
+        const emptyRow = document.querySelector('.empty-rows-message');
+        const noResultsRow = document.querySelector('.no-results-row');
+
+        const applySearch = () => {
+            const keyword = searchInput.value.trim().toLowerCase();
+            let visibleCount = 0;
+
+            rows.forEach(row => {
+                const haystack = (row.dataset.search || '').toLowerCase();
+                const matched = !keyword || haystack.includes(keyword);
+                row.classList.toggle('d-none', !matched);
+                if (matched) visibleCount++;
+            });
+
+            if (emptyRow) emptyRow.classList.toggle('d-none', true);
+            if (noResultsRow) noResultsRow.classList.toggle('d-none', visibleCount !== 0);
+        };
+
+        searchInput.addEventListener('input', applySearch);
+        applySearch();
+    }
 
     if (form) {
         form.addEventListener('submit', function() {

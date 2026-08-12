@@ -112,114 +112,116 @@ $rows = $pdo->query("SELECT * FROM $type ORDER BY name")->fetchAll();
 require __DIR__ . '/templates/header.php'; // Render header HTML
 ?>
 
-<div class="card shadow-sm mb-3">
-    <div class="card-body p-2">
-        <ul class="nav nav-pills nav-fill gap-2">
-            <?php foreach ($m as $key => [$label, $fieldList, $menuIcon]): ?>
-                <li class="nav-item">
-                    <a class="nav-link py-2.5 <?= $type === $key ? 'active bg-success text-white' : 'text-secondary' ?>"
-                       href="?type=<?= $key ?>">
-                        <i class="bi <?= $menuIcon ?> me-2"></i><?= $label ?>
-                    </a>
-                </li>
-            <?php endforeach; ?>
-        </ul>
-    </div>
-</div>
-
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h3 class="page-heading mb-0">
-        <i class="bi <?= $icon ?>"></i> <?= $title ?>
-    </h3>
-    <a href="?type=<?= $type ?>&new=1" class="btn btn-success">
-        <i class="bi bi-plus-lg me-1"></i>Tambah
-    </a>
-</div>
-
-<?php if ($err): ?>
-    <!-- Tampilkan pesan error jika ada (misal: kode sudah dipakai) -->
-    <div class="alert alert-danger d-flex align-items-center gap-2">
-        <i class="bi bi-exclamation-triangle-fill"></i>
-        <?= e($err) ?>
-    </div>
-<?php endif; ?>
-
-<div class="modal fade" id="masterModal" tabindex="-1" aria-labelledby="masterModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-            <form method="post">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="masterModalLabel">
-                        <?= $editRow ? 'Edit ' . $title : 'Tambah ' . $title ?>
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body row g-3">
-                    <?php if ($editRow): ?>
-                        <input type="hidden" name="edit_id" value="<?= $editRow['id'] ?>">
-                    <?php endif; ?>
-
-                    <?php foreach ($fields as $f => $l): ?>
-                        <div class="col-md-<?= count($fields) > 1 ? 6 : 12 ?>">
-                            <label class="form-label"><?= $l ?></label>
-                            <input class="form-control" name="<?= $f ?>"
-                                   value="<?= $editRow ? e($editRow[$f]) : '' ?>">
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        <i class="bi bi-x-lg me-1"></i>Batal
-                    </button>
-                    <button class="btn btn-success">
-                        <i class="bi bi-check-lg me-1"></i><?= $editRow ? 'Simpan' : 'Tambah' ?>
-                    </button>
-                </div>
-            </form>
+<div class="mx-auto" style="max-width: 1180px;">
+    <div class="card shadow-sm mb-3">
+        <div class="card-body p-2">
+            <ul class="nav nav-pills nav-fill gap-2">
+                <?php foreach ($m as $key => [$label, $fieldList, $menuIcon]): ?>
+                    <li class="nav-item">
+                        <a class="nav-link py-2.5 <?= $type === $key ? 'active bg-success text-white' : 'text-secondary' ?>"
+                           href="?type=<?= $key ?>">
+                            <i class="bi <?= $menuIcon ?> me-2"></i><?= $label ?>
+                        </a>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
         </div>
     </div>
-</div>
 
-<!-- Tabel daftar semua data -->
-<div class="card shadow-sm">
-    <div class="table-responsive">
-        <table class="table mb-0">
-            <tr>
-                <th>No</th>
-                <?php foreach ($fields as $l): ?>
-                    <th><?= $l ?></th>
-                <?php endforeach; ?>
-                <th>Aksi</th>
-            </tr>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="page-heading mb-0">
+            <i class="bi <?= $icon ?>"></i> <?= $title ?>
+        </h3>
+        <a href="?type=<?= $type ?>&new=1" class="btn btn-success">
+            <i class="bi bi-plus-lg me-1"></i>Tambah
+        </a>
+    </div>
 
-            <?php foreach ($rows as $i => $r): ?>
-                <!--
-                    Highlight baris kuning jika ID-nya sama dengan yang sedang diedit,
-                    sehingga user tahu baris mana yang sedang dimodifikasi.
-                -->
-                <tr <?= ($editRow && $editRow['id'] == $r['id']) ? 'class="table-warning"' : '' ?>>
-                    <td style="color:#a0aec0;font-size:.8rem;"><?= $i + 1 ?></td>
+    <?php if ($err): ?>
+        <!-- Tampilkan pesan error jika ada (misal: kode sudah dipakai) -->
+        <div class="alert alert-danger d-flex align-items-center gap-2">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <?= e($err) ?>
+        </div>
+    <?php endif; ?>
 
-                    <?php foreach ($fields as $f => $l): ?>
-                        <td><?= e($r[$f]) ?></td>
+    <div class="modal fade" id="masterModal" tabindex="-1" aria-labelledby="masterModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <form method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="masterModalLabel">
+                            <?= $editRow ? 'Edit ' . $title : 'Tambah ' . $title ?>
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body row g-3">
+                        <?php if ($editRow): ?>
+                            <input type="hidden" name="edit_id" value="<?= $editRow['id'] ?>">
+                        <?php endif; ?>
+
+                        <?php foreach ($fields as $f => $l): ?>
+                            <div class="col-md-<?= count($fields) > 1 ? 6 : 12 ?>">
+                                <label class="form-label"><?= $l ?></label>
+                                <input class="form-control" name="<?= $f ?>"
+                                       value="<?= $editRow ? e($editRow[$f]) : '' ?>">
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="bi bi-x-lg me-1"></i>Batal
+                        </button>
+                        <button class="btn btn-success">
+                            <i class="bi bi-check-lg me-1"></i><?= $editRow ? 'Simpan' : 'Tambah' ?>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabel daftar semua data -->
+    <div class="card shadow-sm">
+        <div class="table-responsive">
+            <table class="table mb-0 align-middle">
+                <tr>
+                    <th style="width: 70px;">No</th>
+                    <?php foreach ($fields as $l): ?>
+                        <th><?= $l ?></th>
                     <?php endforeach; ?>
-
-                    <td class="d-flex gap-1">
-                        <!-- Tombol Edit: buka modal edit -->
-                        <a class="btn btn-sm btn-outline-primary"
-                           href="?type=<?= $type ?>&edit=<?= $r['id'] ?>">
-                            <i class="bi bi-pencil-square me-1"></i>Edit
-                        </a>
-                        <!-- Tombol Hapus: konfirmasi dulu sebelum menghapus -->
-                        <a class="btn btn-sm btn-outline-danger"
-                           href="?type=<?= $type ?>&delete=<?= $r['id'] ?>"
-                           onclick="return confirm('Hapus?')">
-                            <i class="bi bi-trash3 me-1"></i>Hapus
-                        </a>
-                    </td>
+                    <th style="width: 200px;">Aksi</th>
                 </tr>
-            <?php endforeach; ?>
-        </table>
+
+                <?php foreach ($rows as $i => $r): ?>
+                    <!--
+                        Highlight baris kuning jika ID-nya sama dengan yang sedang diedit,
+                        sehingga user tahu baris mana yang sedang dimodifikasi.
+                    -->
+                    <tr <?= ($editRow && $editRow['id'] == $r['id']) ? 'class="table-warning"' : '' ?>>
+                        <td style="color:#a0aec0;font-size:.8rem;"><?= $i + 1 ?></td>
+
+                        <?php foreach ($fields as $f => $l): ?>
+                            <td><?= e($r[$f]) ?></td>
+                        <?php endforeach; ?>
+
+                        <td class="d-flex gap-1 flex-wrap">
+                            <!-- Tombol Edit: buka modal edit -->
+                            <a class="btn btn-sm btn-outline-primary"
+                               href="?type=<?= $type ?>&edit=<?= $r['id'] ?>">
+                                <i class="bi bi-pencil-square me-1"></i>Edit
+                            </a>
+                            <!-- Tombol Hapus: konfirmasi dulu sebelum menghapus -->
+                            <a class="btn btn-sm btn-outline-danger"
+                               href="?type=<?= $type ?>&delete=<?= $r['id'] ?>"
+                               onclick="return confirm('Hapus?')">
+                                <i class="bi bi-trash3 me-1"></i>Hapus
+                            </a>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </table>
+        </div>
     </div>
 </div>
 
