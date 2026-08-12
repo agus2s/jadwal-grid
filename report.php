@@ -56,35 +56,39 @@ foreach ($stmt->fetchAll() as $row) {
         </span>
     </div>
 
+    <?php $type = $_GET['type'] ?? 'teacher'; ?>
+
     <div class="card mb-4 shadow-sm">
-        <div class="card-body">
-            <ul class="nav nav-pills nav-fill gap-2">
+        <div class="card-body d-flex flex-wrap align-items-center justify-content-between gap-3">
+            <ul class="nav nav-pills nav-fill gap-2 mb-0 flex-grow-1">
                 <li class="nav-item">
-                    <a class="nav-link active bg-success text-white" href="report.php?type=teacher">
+                    <a class="nav-link <?= $type === 'teacher' ? 'active bg-success text-white' : 'text-secondary' ?>" href="report.php?type=teacher">
                         <i class="bi bi-person-badge me-2"></i>Rekap Guru
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-secondary" href="report.php?type=subject">
+                    <a class="nav-link <?= $type === 'subject' ? 'active bg-success text-white' : 'text-secondary' ?>" href="report.php?type=subject">
                         <i class="bi bi-book me-2"></i>Rekap Mapel
                     </a>
                 </li>
             </ul>
+
+            <a class="btn btn-outline-success btn-sm" href="report_export.php?type=<?= e($type) ?>">
+                <i class="bi bi-download me-1"></i>Export ODS
+            </a>
         </div>
     </div>
-
-    <?php $type = $_GET['type'] ?? 'teacher'; ?>
 
     <?php if ($type === 'subject'): ?>
         <div class="card shadow-sm">
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-bordered align-middle text-center mb-0">
+                    <table class="table table-sm table-bordered align-middle text-center mb-0">
                         <thead class="table-light">
                             <tr>
                                 <th style="min-width: 180px;">Mapel</th>
                                 <?php foreach ($classNames as $className): ?>
-                                    <th style="min-width: 110px;"><?= e($className) ?></th>
+                                    <th style="min-width: 60px;"><?= e($className) ?></th>
                                 <?php endforeach; ?>
                                 <th style="min-width: 100px;">Jumlah</th>
                             </tr>
@@ -114,13 +118,13 @@ foreach ($stmt->fetchAll() as $row) {
         <div class="card shadow-sm">
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-bordered align-middle text-center mb-0">
+                    <table class="table table-sm table-bordered align-middle text-center mb-0">
                         <thead class="table-light">
                             <tr>
                                 <th style="min-width: 180px;">Guru</th>
                                 <th style="min-width: 180px;">Mapel</th>
                                 <?php foreach ($classNames as $className): ?>
-                                    <th style="min-width: 110px;"><?= e($className) ?></th>
+                                    <th style="min-width: 60px;"><?= e($className) ?></th>
                                 <?php endforeach; ?>
                                 <th style="min-width: 100px;">Jumlah</th>
                             </tr>

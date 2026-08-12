@@ -130,7 +130,7 @@ require __DIR__ . '/templates/header.php'; // Render header HTML
 <!-- ─── Heading + tombol toggle tampilan ─── -->
 <div class="d-flex align-items-center justify-content-between mb-3">
     <h3 class="page-heading mb-0"><i class="bi bi-calendar-plus"></i> Penyusunan Jadwal</h3>
-    <div class="view-switcher d-flex gap-2">
+    <div class="view-switcher d-flex gap-2 align-items-center">
         <!-- Kelas CSS 'active-view' ditambahkan ke tombol yang sesuai dengan $view aktif -->
         <a href="?view=list"
            class="btn btn-sm btn-outline-secondary <?= $view === 'list' ? 'active-view' : '' ?>">
@@ -139,6 +139,9 @@ require __DIR__ . '/templates/header.php'; // Render header HTML
         <a href="?view=grid"
            class="btn btn-sm btn-outline-secondary <?= $view === 'grid' ? 'active-view' : '' ?>">
             <i class="bi bi-table me-1"></i>Grid
+        </a>
+        <a href="schedule_export.php" class="btn btn-sm btn-outline-success">
+            <i class="bi bi-file-earmark-spreadsheet me-1"></i>Export ODS
         </a>
     </div>
 </div>
@@ -327,7 +330,7 @@ require __DIR__ . '/templates/header.php'; // Render header HTML
         </div>
     </div>
     <div class="table-responsive">
-        <table class="table table-hover mb-0">
+        <table class="table table-sm table-hover mb-0">
             <thead>
                 <tr>
                     <th>No</th>
@@ -403,11 +406,20 @@ require __DIR__ . '/templates/header.php'; // Render header HTML
 <?php endif; ?>
 
 <script>
-/**
- * Simpan posisi scroll grid sebelum submit form.
- * Saat halaman dimuat ulang setelah tambah jadwal, posisi ini dipulihkan.
- */
 document.addEventListener('DOMContentLoaded', function() {
+    const toastEls = document.querySelectorAll('.toast');
+    toastEls.forEach(function(toastEl) {
+        const toast = new bootstrap.Toast(toastEl, {
+            delay: 4000,
+            autohide: true
+        });
+        toast.show();
+    });
+
+    /**
+     * Simpan posisi scroll grid sebelum submit form.
+     * Saat halaman dimuat ulang setelah tambah jadwal, posisi ini dipulihkan.
+     */
     const scrollStorageKey = 'jadwal-grid-scroll';
     const form = document.querySelector('form[method="post"]');
     const gridWrapper = document.querySelector('.grid-scroll-wrapper');

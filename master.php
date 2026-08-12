@@ -116,7 +116,8 @@ require __DIR__ . '/templates/header.php'; // Render header HTML
     <div class="card shadow-sm mb-3">
         <div class="card-body p-2">
             <ul class="nav nav-pills nav-fill gap-2">
-                <?php foreach ($m as $key => [$label, $fieldList, $menuIcon]): ?>
+                <?php foreach ($m as $key => $meta): ?>
+                    <?php [$label, $fieldList, $menuIcon] = $meta; ?>
                     <li class="nav-item">
                         <a class="nav-link py-2.5 <?= $type === $key ? 'active bg-success text-white' : 'text-secondary' ?>"
                            href="?type=<?= $key ?>">
@@ -184,7 +185,7 @@ require __DIR__ . '/templates/header.php'; // Render header HTML
     <!-- Tabel daftar semua data -->
     <div class="card shadow-sm">
         <div class="table-responsive">
-            <table class="table mb-0 align-middle">
+            <table class="table table-sm mb-0 align-middle">
                 <tr>
                     <th style="width: 70px;">No</th>
                     <?php foreach ($fields as $l): ?>

@@ -164,7 +164,7 @@ require __DIR__ . '/templates/header.php';
     <!-- Grid view of Hari vs JP for one Rombel or one Teacher -->
     <div class="card overflow-hidden">
         <div class="table-responsive">
-            <table class="table table-bordered text-center align-middle mb-0" style="min-width: 750px;">
+            <table class="table table-sm table-bordered text-center align-middle mb-0" style="min-width: 750px;">
                 <thead class="table-light">
                     <tr>
                         <th style="width: 100px;">JP</th>
@@ -218,7 +218,7 @@ require __DIR__ . '/templates/header.php';
     <!-- Grid view of Class vs JP for one Day -->
     <div class="card overflow-hidden">
         <div class="grid-scroll-wrapper">
-            <table class="table table-bordered text-center align-middle mb-0" style="font-size:.8rem;">
+            <table class="table table-sm table-bordered text-center align-middle mb-0" style="font-size:.8rem;">
                 <thead class="grid-sticky-head">
                     <tr>
                         <th class="grid-sticky-col" style="min-width:90px;">JP</th>

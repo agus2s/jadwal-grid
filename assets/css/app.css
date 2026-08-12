@@ -145,6 +145,11 @@ aside .list-group-item.active {
     vertical-align: middle;
 }
 
+.table-sm th,
+.table-sm td {
+    padding: .35rem .5rem !important;
+}
+
 .table-hover tbody tr:hover {
     background: #f0fdf6;
 }
