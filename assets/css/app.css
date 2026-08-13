@@ -7,7 +7,7 @@
 
 body {
     background: #f0f4f8;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     font-size: 0.9rem;
     color: #1a2332;
     padding-top: 0;
@@ -273,10 +273,11 @@ aside .list-group-item.active {
 .schedule-cell {
     min-width: 150px;
     min-height: 52px;
-    height: auto;
-    vertical-align: top;
+    height: 52px;
+    vertical-align: middle;
     padding: .35rem !important;
     transition: background .15s;
+    overflow: hidden;
 }
 
 .schedule-cell:hover {
@@ -285,28 +286,38 @@ aside .list-group-item.active {
 
 .dashboard-cell {
     min-height: 52px;
-    height: auto;
-    vertical-align: top;
+    height: 52px;
+    vertical-align: middle;
+    overflow: hidden;
 }
 
 .cell-entry {
-    display: inline-block;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: .15rem;
     background: linear-gradient(135deg, #e6f9ee, #d4f5e2);
     border-left: 3px solid #009a44;
     border-radius: 4px;
     padding: .2rem .4rem;
     font-size: .78rem;
-    line-height: 1.2;
+    line-height: 1.1;
     width: 100%;
+    height: 100%;
+    overflow: hidden;
 }
 
-.cell-entry strong {
-    color: #006b2e;
+.cell-entry strong,
+.cell-entry small {
     display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .cell-entry small {
     color: #4a5568;
+    font-size: .82rem;
 }
 
 /* Day row header colours */

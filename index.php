@@ -130,15 +130,16 @@ if ($tab === 'rombel' && $selected_class_id) {
                         </select>
                     </div>
                 <?php elseif ($tab === 'day'): ?>
-                    <div class="col-md-4">
+                    <div class="col-md-8">
                         <label class="form-label">Pilih Hari</label>
-                        <select name="day" class="form-select" onchange="this.form.submit()">
+                        <div class="d-flex flex-wrap gap-2">
                             <?php foreach ($days as $d): ?>
-                                <option value="<?= e($d) ?>" <?= $selected_day === $d ? 'selected' : '' ?>>
+                                <button type="submit" name="day" value="<?= e($d) ?>"
+                                        class="btn <?= $selected_day === $d ? 'btn-success' : 'btn-outline-secondary' ?> py-2">
                                     <?= e($d) ?>
-                                </option>
+                                </button>
                             <?php endforeach; ?>
-                        </select>
+                        </div>
                     </div>
                 <?php elseif ($tab === 'teacher'): ?>
                     <div class="col-md-4">
@@ -153,11 +154,13 @@ if ($tab === 'rombel' && $selected_class_id) {
                     </div>
                 <?php endif; ?>
 
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-success w-100 py-2">
-                        <i class="bi bi-funnel me-1"></i> Filter
-                    </button>
-                </div>
+                <?php if ($tab !== 'day'): ?>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-secondary py-2">
+                            <i class="bi bi-funnel me-1"></i> Filter
+                        </button>
+                    </div>
+                <?php endif; ?>
             </form>
         </div>
     </div>
