@@ -28,7 +28,7 @@ if ($currentPage === 'index.php') {
     </head>
     <body>
         <nav class="navbar navbar-dark bg-success">
-            <div class=container-fluid>
+            <div class="container-fluid">
                 <div class="d-flex align-items-center gap-2">
                     <a class="navbar-brand fw-bold" href=index.php>
                         <i class="bi bi-calendar-week me-2"></i>Jadwal KBM Pro
@@ -36,16 +36,16 @@ if ($currentPage === 'index.php') {
                 </div>
                 <div class="d-flex align-items-center gap-3">
                     <a class="nav-link text-white fw-semibold <?= $activeNav === 'dashboard' ? 'active-nav' : '' ?>" href=index.php>
-                        <i class="bi bi-speedometer2 me-1"></i>Dashboard
+                        Dashboard
                     </a>
                     <a class="nav-link text-white fw-semibold <?= $activeNav === 'report' ? 'active-nav' : '' ?>" href=report.php>
-                        <i class="bi bi-clipboard-data me-1"></i>Rekap
+                        Rekap
                     </a>
                     <a class="nav-link text-white fw-semibold <?= $activeNav === 'master' ? 'active-nav' : '' ?>" href="master.php?type=teachers">
-                        <i class="bi bi-gear me-1"></i>Master
+                        Master
                     </a>
                     <a class="nav-link text-white fw-semibold <?= $activeNav === 'schedule' ? 'active-nav' : '' ?>" href=schedule.php>
-                        <i class="bi bi-calendar-plus me-1"></i>Penyusunan
+                        Penyusunan
                     </a>
                 </div>
             </div>

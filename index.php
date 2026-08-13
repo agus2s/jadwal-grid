@@ -12,6 +12,14 @@ $title = 'Dashboard';   // Judul halaman, digunakan di <title> oleh header.php
 require __DIR__ . '/templates/header.php'; // Render HTML pembuka (navbar, sidebar, dsb.)
 
 $days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+$dayColors = [
+    'Senin'  => ['bg' => '#ebf4ff', 'color' => '#2b6cb0', 'badge' => '#3182ce'],
+    'Selasa' => ['bg' => '#faf5ff', 'color' => '#6b46c1', 'badge' => '#805ad5'],
+    'Rabu'   => ['bg' => '#f0fff4', 'color' => '#276749', 'badge' => '#38a169'],
+    'Kamis'  => ['bg' => '#fffaf0', 'color' => '#c05621', 'badge' => '#dd6b20'],
+    'Jumat'  => ['bg' => '#fff5f5', 'color' => '#c53030', 'badge' => '#e53e3e'],
+    'Sabtu'  => ['bg' => '#f7fafc', 'color' => '#4a5568', 'badge' => '#718096'],
+];
 
 $year = $pdo->query('SELECT * FROM school_years WHERE active=1 LIMIT 1')->fetch();
 $classes = $pdo->query('SELECT * FROM classes ORDER BY name')->fetchAll();
@@ -50,8 +58,8 @@ if ($tab === 'rombel' && $selected_class_id) {
 
 ?>
 
-<div class="mt-3 pt-2 border-top">
-    <div class="d-flex align-items-center justify-content-between mb-4">
+<div class="page-header">
+    <div class="page-header-inner">
         <h3 class="page-heading mb-0"><i class="bi bi-calendar3"></i> Lihat Jadwal</h3>
         <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-3">
             Tahun Ajaran: <strong><?= e($year['name']) ?></strong>
@@ -155,10 +163,12 @@ if ($tab === 'rombel' && $selected_class_id) {
                                         foreach ($rows as $r) {
                                             if ((int)$r['class_id'] === (int)$c['id'] && (int)$r['jp'] === $jp) {
                                                 $cell_found = true;
+                                                $entryColors = $dayColors[$selected_day] ?? ['bg' => '#f7fafc', 'color' => '#4a5568', 'badge' => '#718096'];
                                                 ?>
-                                                <div class="cell-entry text-start">
-                                                    <strong><?= e($r['subject_name']) ?></strong>
-                                                    <small><?= e($r['teacher_name']) ?></small>
+                                                <div class="cell-entry text-start"
+                                                     style="background: linear-gradient(135deg, <?= $entryColors['bg'] ?>, #ffffff); border-left-color: <?= $entryColors['badge'] ?>;">
+                                                    <strong style="color: <?= $entryColors['color'] ?>;"><?= e($r['subject_name']) ?></strong>
+                                                    <small style="color: <?= $entryColors['color'] ?>; opacity: .8;"><?= e($r['teacher_name']) ?></small>
                                                 </div>
                                                 <?php
                                                 break;
@@ -199,17 +209,25 @@ if ($tab === 'rombel' && $selected_class_id) {
                                             if ($r['day'] === $d && (int)$r['jp'] === $jp) {
                                                 $cell_found = true;
                                                 if ($tab === 'rombel') {
+                                                    $entryColors = $dayColors[$d] ?? ['bg' => '#f7fafc', 'color' => '#4a5568', 'badge' => '#718096'];
                                                     ?>
-                                                    <div class="cell-entry text-start">
-                                                        <strong class="d-block"><?= e($r['subject_name']) ?></strong>
-                                                        <small class="text-muted"><i class="bi bi-person me-1"></i><?= e($r['teacher_name']) ?></small>
+                                                    <div class="cell-entry text-start"
+                                                         style="background: linear-gradient(135deg, <?= $entryColors['bg'] ?>, #ffffff); border-left-color: <?= $entryColors['badge'] ?>;">
+                                                        <strong class="d-block" style="color: <?= $entryColors['color'] ?>;">
+                                                            <?= e($r['subject_name']) ?>
+                                                        </strong>
+                                                        <small style="color: <?= $entryColors['color'] ?>; opacity: .8;"><i class="bi bi-person me-1"></i><?= e($r['teacher_name']) ?></small>
                                                     </div>
                                                     <?php
                                                 } else {
+                                                    $entryColors = $dayColors[$d] ?? ['bg' => '#f7fafc', 'color' => '#4a5568', 'badge' => '#718096'];
                                                     ?>
-                                                    <div class="cell-entry text-start" style="border-left-color: #805ad5;">
-                                                        <strong class="d-block" style="color: #6b46c1;"><?= e($r['class_name']) ?></strong>
-                                                        <small class="text-muted"><i class="bi bi-book me-1"></i><?= e($r['subject_name']) ?></small>
+                                                    <div class="cell-entry text-start"
+                                                         style="background: linear-gradient(135deg, <?= $entryColors['bg'] ?>, #ffffff); border-left-color: <?= $entryColors['badge'] ?>;">
+                                                        <strong class="d-block" style="color: <?= $entryColors['color'] ?>;">
+                                                            <?= e($r['class_name']) ?>
+                                                        </strong>
+                                                        <small style="color: <?= $entryColors['color'] ?>; opacity: .8;"><i class="bi bi-book me-1"></i><?= e($r['subject_name']) ?></small>
                                                     </div>
                                                     <?php
                                                 }

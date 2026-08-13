@@ -48,12 +48,14 @@ foreach ($stmt->fetchAll() as $row) {
 }
 ?>
 
-<div class="container-fluid py-3">
-    <div class="d-flex align-items-center justify-content-between mb-4">
-        <h3 class="page-heading mb-0"><i class="bi bi-clipboard-data"></i> Rekap Jam Pelajaran</h3>
-        <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-3">
-            Tahun Ajaran: <strong><?= e($year['name']) ?></strong>
-        </span>
+<div class="container">
+    <div class="page-header">
+        <div class="page-header-inner">
+            <h3 class="page-heading mb-0"><i class="bi bi-clipboard-data"></i> Rekap Jam Pelajaran</h3>
+            <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-3">
+                Tahun Ajaran: <strong><?= e($year['name']) ?></strong>
+            </span>
+        </div>
     </div>
 
     <?php $type = $_GET['type'] ?? 'teacher'; ?>
@@ -126,7 +128,7 @@ foreach ($stmt->fetchAll() as $row) {
                                 <th style="min-width: 180px;">Guru</th>
                                 <th style="min-width: 180px;">Mapel</th>
                                 <?php foreach ($classNames as $className): ?>
-                                    <th style="min-width: 60px;"><?= e($className) ?></th>
+                                    <th style="min-width: 50px;"><?= e($className) ?></th>
                                 <?php endforeach; ?>
                                 <th style="min-width: 100px;">Jumlah</th>
                             </tr>

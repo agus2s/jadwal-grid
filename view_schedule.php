@@ -77,11 +77,13 @@ $title = 'Lihat Jadwal';
 require __DIR__ . '/templates/header.php';
 ?>
 
-<div class="d-flex align-items-center justify-content-between mb-4">
-    <h3 class="page-heading mb-0"><i class="bi bi-calendar3"></i> Lihat Jadwal</h3>
-    <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-3">
-        Tahun Ajaran: <strong><?= e($year['name']) ?></strong>
-    </span>
+<div class="page-header">
+    <div class="page-header-inner">
+        <h3 class="page-heading mb-0"><i class="bi bi-calendar3"></i> Lihat Jadwal</h3>
+        <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-3">
+            Tahun Ajaran: <strong><?= e($year['name']) ?></strong>
+        </span>
+    </div>
 </div>
 
 <!-- Tabs Switcher -->

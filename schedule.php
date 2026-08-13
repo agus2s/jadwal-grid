@@ -128,21 +128,23 @@ require __DIR__ . '/templates/header.php'; // Render header HTML
 ?>
 
 <!-- ─── Heading + tombol toggle tampilan ─── -->
-<div class="d-flex align-items-center justify-content-between mb-3">
-    <h3 class="page-heading mb-0"><i class="bi bi-calendar-plus"></i> Penyusunan Jadwal</h3>
-    <div class="view-switcher d-flex gap-2 align-items-center">
-        <!-- Kelas CSS 'active-view' ditambahkan ke tombol yang sesuai dengan $view aktif -->
-        <a href="?view=grid"
-           class="btn btn-sm btn-outline-secondary <?= $view === 'grid' ? 'active-view' : '' ?>">
-            <i class="bi bi-table me-1"></i>Grid
-        </a>
-        <a href="?view=list"
-           class="btn btn-sm btn-outline-secondary <?= $view === 'list' ? 'active-view' : '' ?>">
-            <i class="bi bi-list-ul me-1"></i>Daftar
-        </a>
-        <a href="schedule_export.php" class="btn btn-sm btn-outline-success">
-            <i class="bi bi-file-earmark-spreadsheet me-1"></i>Export ODS
-        </a>
+<div class="page-header">
+    <div class="page-header-inner">
+        <h3 class="page-heading mb-0"><i class="bi bi-calendar-plus"></i> Penyusunan Jadwal</h3>
+        <div class="view-switcher d-flex gap-2 align-items-center">
+            <!-- Kelas CSS 'active-view' ditambahkan ke tombol yang sesuai dengan $view aktif -->
+            <a href="?view=grid"
+               class="btn btn-sm btn-outline-secondary <?= $view === 'grid' ? 'active-view' : '' ?>">
+                <i class="bi bi-table me-1"></i>Grid
+            </a>
+            <a href="?view=list"
+               class="btn btn-sm btn-outline-secondary <?= $view === 'list' ? 'active-view' : '' ?>">
+                <i class="bi bi-list-ul me-1"></i>Daftar
+            </a>
+            <a href="schedule_export.php" class="btn btn-sm btn-outline-success">
+                <i class="bi bi-file-earmark-spreadsheet me-1"></i>Export ODS
+            </a>
+        </div>
     </div>
 </div>
 
@@ -253,7 +255,7 @@ require __DIR__ . '/templates/header.php'; // Render header HTML
             <thead class="grid-sticky-head">
                 <tr>
                     <!-- Pojok kiri-atas: sticky di X dan Y sekaligus -->
-                    <th class="grid-sticky-col" style="min-width:90px;">Hari / JP</th>
+                    <th class="grid-sticky-col" style="min-width:90px;top:-1px;">Hari / JP</th>
                     <!-- Header kolom: satu kolom per rombel -->
                     <?php foreach ($classes as $c): ?>
                         <th><?= e($c['name']) ?></th>
@@ -277,6 +279,7 @@ require __DIR__ . '/templates/header.php'; // Render header HTML
                             <?php foreach ($classes as $cl): ?>
                                 <td class="schedule-cell">
                                     <?php
+                                    $entryColors = $dayColors[$d] ?? ['bg' => '#f7fafc', 'color' => '#4a5568', 'badge' => '#718096'];
                                     /**
                                      * Cari dari $rows apakah ada jadwal yang cocok:
                                      * hari = $d, JP = $jp, class_id = $cl['id']
@@ -292,10 +295,12 @@ require __DIR__ . '/templates/header.php'; // Render header HTML
                                             (int)$r['class_id']  === (int)$cl['id']
                                         ): ?>
                                             <!-- Sel berisi: nama mapel + guru, dengan tombol hapus yang muncul saat hover -->
-                                            <div class="cell-entry" data-schedule-id="<?= (int) $r['id'] ?>">
+                                            <div class="cell-entry"
+                                                 data-schedule-id="<?= (int) $r['id'] ?>"
+                                                 style="background: linear-gradient(135deg, <?= $entryColors['bg'] ?>, #ffffff); border-left-color: <?= $entryColors['badge'] ?>;">
                                                 <div class="cell-content">
-                                                    <strong><?= e($r['subject_name']) ?></strong>
-                                                    <small class="d-block"><?= e($r['teacher_name']) ?></small>
+                                                    <strong style="color: <?= $entryColors['color'] ?>;"><?= e($r['subject_name']) ?></strong>
+                                                    <small class="d-block" style="color: <?= $entryColors['color'] ?>; opacity: .8;"><?= e($r['teacher_name']) ?></small>
                                                 </div>
                                                 <a class="cell-delete-btn"
                                                    href="?delete=<?= (int) $r['id'] ?>"
