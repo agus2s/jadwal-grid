@@ -292,6 +292,7 @@ aside .list-group-item.active {
 }
 
 .cell-entry {
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -307,6 +308,14 @@ aside .list-group-item.active {
     overflow: hidden;
 }
 
+.cell-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: .15rem;
+}
+
 .cell-entry strong,
 .cell-entry small {
     display: block;
@@ -318,6 +327,38 @@ aside .list-group-item.active {
 .cell-entry small {
     color: #4a5568;
     font-size: .82rem;
+}
+
+/* Floating Delete Button */
+.cell-delete-btn {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(220, 38, 38, 0.9);
+    color: white;
+    border-radius: 3px;
+    opacity: 0;
+    transition: opacity 0.15s ease, background 0.15s ease, transform 0.15s ease;
+    border: none;
+    padding: 0;
+    font-size: 0.65rem;
+    line-height: 1;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.cell-delete-btn:hover {
+    background: rgba(220, 38, 38, 1);
+    transform: scale(1.15);
+}
+
+.cell-entry:hover .cell-delete-btn {
+    opacity: 1;
 }
 
 /* Day row header colours */
@@ -368,6 +409,18 @@ aside .list-group-item.active {
 
 .view-switcher .btn.active-view {
     background: #198754;
+    color: #fff;
+    border-color: transparent;
+}
+
+/* Day filter buttons */
+.day-filter-btn {
+    border-radius: 6px;
+    font-size: .8rem;
+}
+
+.day-filter-btn.active-filter {
+    background: #009a44;
     color: #fff;
     border-color: transparent;
 }

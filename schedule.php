@@ -121,8 +121,8 @@ $rows = $pdo->query("
     ORDER BY s.day, s.jp, c.name
 ")->fetchAll();
 
-// Baca mode tampilan dari URL (?view=grid atau default 'list')
-$view = $_GET['view'] ?? 'list';
+// Baca mode tampilan dari URL (?view=list atau default 'grid')
+$view = $_GET['view'] ?? 'grid';
 
 require __DIR__ . '/templates/header.php'; // Render header HTML
 ?>
@@ -132,13 +132,13 @@ require __DIR__ . '/templates/header.php'; // Render header HTML
     <h3 class="page-heading mb-0"><i class="bi bi-calendar-plus"></i> Penyusunan Jadwal</h3>
     <div class="view-switcher d-flex gap-2 align-items-center">
         <!-- Kelas CSS 'active-view' ditambahkan ke tombol yang sesuai dengan $view aktif -->
-        <a href="?view=list"
-           class="btn btn-sm btn-outline-secondary <?= $view === 'list' ? 'active-view' : '' ?>">
-            <i class="bi bi-list-ul me-1"></i>Daftar
-        </a>
         <a href="?view=grid"
            class="btn btn-sm btn-outline-secondary <?= $view === 'grid' ? 'active-view' : '' ?>">
             <i class="bi bi-table me-1"></i>Grid
+        </a>
+        <a href="?view=list"
+           class="btn btn-sm btn-outline-secondary <?= $view === 'list' ? 'active-view' : '' ?>">
+            <i class="bi bi-list-ul me-1"></i>Daftar
         </a>
         <a href="schedule_export.php" class="btn btn-sm btn-outline-success">
             <i class="bi bi-file-earmark-spreadsheet me-1"></i>Export ODS
@@ -291,20 +291,18 @@ require __DIR__ . '/templates/header.php'; // Render header HTML
                                             (int)$r['jp']        === $jp &&
                                             (int)$r['class_id']  === (int)$cl['id']
                                         ): ?>
-                                            <!-- Sel berisi: nama mapel + guru, dengan tombol hapus yang muncul saat diklik -->
+                                            <!-- Sel berisi: nama mapel + guru, dengan tombol hapus yang muncul saat hover -->
                                             <div class="cell-entry" data-schedule-id="<?= (int) $r['id'] ?>">
-                                                <div class="d-flex align-items-center justify-content-between gap-2">
-                                                    <div class="text-start">
-                                                        <strong><?= e($r['subject_name']) ?></strong>
-                                                        <small class="d-block"><?= e($r['teacher_name']) ?></small>
-                                                    </div>
-                                                    <a class="btn btn-link btn-sm text-danger p-0 delete-cell-btn"
-                                                       href="?delete=<?= (int) $r['id'] ?>"
-                                                       onclick="return confirm('Hapus jadwal ini?')"
-                                                       style="display:none; font-size:.7rem; line-height:1;">
-                                                        <i class="bi bi-trash3"></i>
-                                                    </a>
+                                                <div class="cell-content">
+                                                    <strong><?= e($r['subject_name']) ?></strong>
+                                                    <small class="d-block"><?= e($r['teacher_name']) ?></small>
                                                 </div>
+                                                <a class="cell-delete-btn"
+                                                   href="?delete=<?= (int) $r['id'] ?>"
+                                                   onclick="return confirm('Hapus jadwal ini?')"
+                                                   title="Hapus jadwal">
+                                                    <i class="bi bi-trash3"></i>
+                                                </a>
                                             </div>
                                         <?php endif;
                                     endforeach; ?>
@@ -325,8 +323,26 @@ require __DIR__ . '/templates/header.php'; // Render header HTML
 ════════════════════════════════════════════════════════ -->
 <div class="card">
     <div class="p-3 border-bottom">
-        <div class="row g-2 justify-content-end">
-            <div class="col-md-4 col-lg-3">
+        <!-- Filter & Search Container -->
+        <div class="d-flex align-items-flex-end gap-3 flex-wrap">
+            <!-- Filter Buttons by Day -->
+            <div>
+                <label class="form-label mb-2" style="font-size:.75rem;text-transform:uppercase;letter-spacing:.4px;color:#718096;">
+                    Filter Berdasarkan Hari
+                </label>
+                <div class="d-flex flex-wrap gap-2">
+                    <button type="button" class="btn btn-sm btn-outline-secondary day-filter-btn active-filter" data-day="all">
+                        Semua
+                    </button>
+                    <?php foreach ($days as $d): ?>
+                        <button type="button" class="btn btn-sm btn-outline-secondary day-filter-btn" data-day="<?= e($d) ?>">
+                            <?= e($d) ?>
+                        </button>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            <!-- Search Box -->
+            <div style="flex: 0 1 300px;">
                 <label class="form-label mb-1" style="font-size:.75rem;text-transform:uppercase;letter-spacing:.4px;color:#718096;">
                     Cari Jadwal
                 </label>
@@ -367,7 +383,7 @@ require __DIR__ . '/templates/header.php'; // Render header HTML
                         $dc = $dayColors[$r['day']] ?? ['badge' => '#718096'];
                         $searchText = strtolower($r['day'] . ' ' . $r['class_name'] . ' ' . $r['subject_name'] . ' ' . $r['teacher_name'] . ' jp ' . $r['jp']);
                     ?>
-                        <tr class="schedule-row" data-search="<?= e($searchText) ?>">
+                        <tr class="schedule-row" data-search="<?= e($searchText) ?>" data-day="<?= e($r['day']) ?>">
                             <!-- Nomor urut (1-based, bukan ID database) -->
                             <td style="color:#a0aec0;font-size:.8rem;">
                                 <?= $i + 1 ?>
@@ -439,14 +455,34 @@ document.addEventListener('DOMContentLoaded', function() {
         const rows = Array.from(document.querySelectorAll('.schedule-row'));
         const emptyRow = document.querySelector('.empty-rows-message');
         const noResultsRow = document.querySelector('.no-results-row');
+        const dayFilterBtns = document.querySelectorAll('.day-filter-btn');
 
-        const applySearch = () => {
+        let selectedDay = 'all'; // Current day filter
+
+        // Handle day filter button clicks
+        dayFilterBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Update active button
+                dayFilterBtns.forEach(b => b.classList.remove('active-filter'));
+                this.classList.add('active-filter');
+                selectedDay = this.dataset.day;
+                applyFilters();
+            });
+        });
+
+        const applyFilters = () => {
             const keyword = searchInput.value.trim().toLowerCase();
             let visibleCount = 0;
 
             rows.forEach(row => {
                 const haystack = (row.dataset.search || '').toLowerCase();
-                const matched = !keyword || haystack.includes(keyword);
+                const rowDay = row.dataset.day || '';
+                
+                // Apply both filters
+                const matchesSearch = !keyword || haystack.includes(keyword);
+                const matchesDay = selectedDay === 'all' || rowDay === selectedDay;
+                const matched = matchesSearch && matchesDay;
+                
                 row.classList.toggle('d-none', !matched);
                 if (matched) visibleCount++;
             });
@@ -455,8 +491,8 @@ document.addEventListener('DOMContentLoaded', function() {
             if (noResultsRow) noResultsRow.classList.toggle('d-none', visibleCount !== 0);
         };
 
-        searchInput.addEventListener('input', applySearch);
-        applySearch();
+        searchInput.addEventListener('input', applyFilters);
+        applyFilters();
     }
 
     if (form) {
@@ -490,29 +526,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     <?php if ($view === 'grid'): ?>
 
-    document.querySelectorAll('.cell-entry').forEach(function(entry) {
-        const deleteBtn = entry.querySelector('.delete-cell-btn');
-        if (!deleteBtn) return;
-
-        entry.addEventListener('click', function(event) {
-            if (event.target.closest('a')) return;
-
-            document.querySelectorAll('.cell-entry').forEach(function(otherEntry) {
-                const otherBtn = otherEntry.querySelector('.delete-cell-btn');
-                if (otherBtn) otherBtn.style.display = 'none';
-                otherEntry.classList.remove('is-active');
-            });
-
-            this.classList.add('is-active');
-            deleteBtn.style.display = 'inline-flex';
-        });
-
-        entry.addEventListener('mouseleave', function() {
-            if (!this.classList.contains('is-active')) {
-                deleteBtn.style.display = 'none';
-            }
-        });
-    });
+    // Grid view: no need for click handlers on cell-entry
+    // Delete buttons are now floating and controlled by CSS hover effects
 
     // Ambil semua cells yang kosong (tidak memiliki child .cell-entry)
     document.querySelectorAll('.schedule-cell').forEach(cell => {

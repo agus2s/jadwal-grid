@@ -1,6 +1,6 @@
                 </main>
 
-                <footer class="mt-3 py-2 border-top">
+                <footer class="py-3">
                     <div class="container-fluid text-center text-muted small">
                         &copy; <?= date('Y') ?> Agus Supriyadi
                     </div>

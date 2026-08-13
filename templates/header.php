@@ -1,5 +1,5 @@
 <?php
-$title = $title ?? 'Jadwal MA Syamsul Huda';
+$title = $title ?? 'Jadwal KBM Pro';
 $currentPage = basename($_SERVER['PHP_SELF'] ?? 'index.php');
 $activeNav = '';
 
@@ -31,7 +31,7 @@ if ($currentPage === 'index.php') {
             <div class=container-fluid>
                 <div class="d-flex align-items-center gap-2">
                     <a class="navbar-brand fw-bold" href=index.php>
-                        <i class="bi bi-calendar-week me-2"></i>MA Syamsul Huda
+                        <i class="bi bi-calendar-week me-2"></i>Jadwal KBM Pro
                     </a>
                 </div>
                 <div class="d-flex align-items-center gap-3">
