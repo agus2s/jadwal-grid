@@ -7,7 +7,7 @@ if ($currentPage === 'index.php') {
     $activeNav = 'dashboard';
 } elseif ($currentPage === 'report.php') {
     $activeNav = 'report';
-} elseif ($currentPage === 'master.php') {
+} elseif ($currentPage === 'master.php' || $currentPage === 'jam_pelajaran.php') {
     $activeNav = 'master';
 } elseif ($currentPage === 'schedule.php') {
     $activeNav = 'schedule';

@@ -15,6 +15,7 @@
 
 require __DIR__ . '/config/database.php'; // Koneksi database
 $pdo = db();
+$jam_pelajaran = get_jam_pelajaran();
 
 // Daftar hari sekolah — urutan menentukan urutan tampilan grid
 $days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
@@ -190,12 +191,11 @@ require __DIR__ . '/templates/header.php'; // Render header HTML
                 </select>
             </div>
 
-            <!-- Dropdown JP (Jam Pelajaran): 1 – 9 -->
-            <div class="col-md-1">
-                <label class="form-label">JP</label>
+            <div class="col-md-2">
+                <label class="form-label">JP (Jam Pelajaran)</label>
                 <select name="jp" class="form-select">
                     <?php for ($i = 1; $i <= 9; $i++): ?>
-                        <option><?= $i ?></option>
+                        <option value="<?= $i ?>">JP <?= $i ?><?php if (isset($jam_pelajaran[$i])): ?> (<?= e($jam_pelajaran[$i]['start']) ?> - <?= e($jam_pelajaran[$i]['end']) ?>)<?php endif; ?></option>
                     <?php endfor; ?>
                 </select>
             </div>
@@ -271,8 +271,13 @@ require __DIR__ . '/templates/header.php'; // Render header HTML
                         <tr>
                             <!-- Kolom paling kiri: sticky di sumbu X agar tetap terlihat saat scroll kanan -->
                             <th class="<?= $daySlug ?> grid-sticky-col" style="white-space:nowrap;font-size:.75rem;font-weight:600;">
-                                <?= $d ?><br>
-                                <span style="font-weight:400;opacity:.75;">JP <?= $jp ?></span>
+                                <?= e($d) ?><br>
+                                <span style="font-weight:400;opacity:.75;">
+                                    JP <?= $jp ?>
+                                    <?php if (isset($jam_pelajaran[$jp])): ?>
+                                        <br><span class="text-muted" style="font-size: 0.65rem; font-weight: normal;"><?= e($jam_pelajaran[$jp]['start']) ?> - <?= e($jam_pelajaran[$jp]['end']) ?></span>
+                                    <?php endif; ?>
+                                </span>
                             </th>
 
                             <!-- Satu sel per rombel pada hari & JP ini -->
@@ -406,6 +411,9 @@ require __DIR__ . '/templates/header.php'; // Render header HTML
 
                             <td>
                                 <span class="fw-bold" style="color:#009a44;">JP <?= $r['jp'] ?></span>
+                                <?php if (isset($jam_pelajaran[$r['jp']])): ?>
+                                    <br><small class="text-muted" style="font-size: 0.75rem;"><?= e($jam_pelajaran[$r['jp']]['start']) ?> - <?= e($jam_pelajaran[$r['jp']]['end']) ?></small>
+                                <?php endif; ?>
                             </td>
 
                             <td><?= e($r['class_name']) ?></td>    <!-- Dari JOIN ke tabel classes -->

@@ -10,6 +10,7 @@
 
 require __DIR__ . '/config/database.php';
 $pdo = db();
+$jam_pelajaran = get_jam_pelajaran();
 
 $days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
 
@@ -178,7 +179,12 @@ require __DIR__ . '/templates/header.php';
                 <tbody>
                     <?php for ($jp = 1; $jp <= 9; $jp++): ?>
                         <tr>
-                            <td class="fw-bold text-success bg-light">JP <?= $jp ?></td>
+                            <td class="fw-bold text-success bg-light">
+                                JP <?= $jp ?>
+                                <?php if (isset($jam_pelajaran[$jp])): ?>
+                                    <br><span class="text-muted" style="font-size: 0.7rem; font-weight: normal;"><?= e($jam_pelajaran[$jp]['start']) ?> - <?= e($jam_pelajaran[$jp]['end']) ?></span>
+                                <?php endif; ?>
+                            </td>
                             <?php foreach ($days as $d): ?>
                                 <td class="p-2" style="height: 75px; vertical-align: top;">
                                     <?php
@@ -232,7 +238,12 @@ require __DIR__ . '/templates/header.php';
                 <tbody>
                     <?php for ($jp = 1; $jp <= 9; $jp++): ?>
                         <tr>
-                            <td class="fw-bold text-success bg-light grid-sticky-col">JP <?= $jp ?></td>
+                            <td class="fw-bold text-success bg-light grid-sticky-col">
+                                JP <?= $jp ?>
+                                <?php if (isset($jam_pelajaran[$jp])): ?>
+                                    <br><span class="text-muted" style="font-size: 0.7rem; font-weight: normal;"><?= e($jam_pelajaran[$jp]['start']) ?> - <?= e($jam_pelajaran[$jp]['end']) ?></span>
+                                <?php endif; ?>
+                            </td>
                             <?php foreach ($classes as $c): ?>
                                 <td class="schedule-cell">
                                     <?php

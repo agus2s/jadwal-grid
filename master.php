@@ -171,6 +171,11 @@ require __DIR__ . '/templates/header.php'; // Render header HTML
                         </a>
                     </li>
                 <?php endforeach; ?>
+                <li class="nav-item">
+                    <a class="nav-link py-2.5 text-secondary" href="jam_pelajaran.php">
+                        <i class="bi bi-clock me-2"></i>Jam Pelajaran
+                    </a>
+                </li>
             </ul>
         </div>
     </div>

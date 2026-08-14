@@ -46,3 +46,20 @@ function e(?string $v): string
 {
     return htmlspecialchars($v ?? '', ENT_QUOTES, 'UTF-8');
 }
+
+/**
+ * Mengambil data jam pelajaran dari config/jam_pelajaran.json.
+ */
+function get_jam_pelajaran(): array
+{
+    static $jam_pelajaran = null;
+    if ($jam_pelajaran === null) {
+        $path = __DIR__ . '/jam_pelajaran.json';
+        if (file_exists($path)) {
+            $jam_pelajaran = json_decode(file_get_contents($path), true) ?? [];
+        } else {
+            $jam_pelajaran = [];
+        }
+    }
+    return $jam_pelajaran;
+}

@@ -9,6 +9,7 @@
 require __DIR__ . '/config/database.php'; // Memuat konfigurasi & koneksi database
 $pdo   = db();           // Ambil objek PDO dari fungsi db()
 $title = 'Dashboard';   // Judul halaman, digunakan di <title> oleh header.php
+$jam_pelajaran = get_jam_pelajaran();
 require __DIR__ . '/templates/header.php'; // Render HTML pembuka (navbar, sidebar, dsb.)
 
 $days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
@@ -146,7 +147,7 @@ if ($tab === 'rombel' && $selected_class_id) {
                 <table class="table table-sm table-bordered text-center align-middle mb-0" style="font-size:.8rem;">
                     <thead class="grid-sticky-head">
                         <tr>
-                            <th class="grid-sticky-col" style="min-width:90px;">JP</th>
+                            <th class="grid-sticky-col" style="min-width:100px;">JP</th>
                             <?php foreach ($classes as $c): ?>
                                 <th><?= e($c['name']) ?></th>
                             <?php endforeach; ?>
@@ -155,7 +156,12 @@ if ($tab === 'rombel' && $selected_class_id) {
                     <tbody>
                         <?php for ($jp = 1; $jp <= 9; $jp++): ?>
                             <tr>
-                                <td class="fw-bold text-success bg-light grid-sticky-col">JP <?= $jp ?></td>
+                                <td class="fw-bold text-success bg-light grid-sticky-col">
+                                    JP <?= $jp ?>
+                                    <?php if (isset($jam_pelajaran[$jp])): ?>
+                                        <br><span class="text-muted" style="font-size: 0.7rem; font-weight: normal;"><?= e($jam_pelajaran[$jp]['start']) ?> - <?= e($jam_pelajaran[$jp]['end']) ?></span>
+                                    <?php endif; ?>
+                                </td>
                                 <?php foreach ($classes as $c): ?>
                                     <td class="schedule-cell">
                                         <?php
@@ -200,7 +206,12 @@ if ($tab === 'rombel' && $selected_class_id) {
                     <tbody>
                         <?php for ($jp = 1; $jp <= 9; $jp++): ?>
                             <tr>
-                                <td class="fw-bold text-success bg-light">JP <?= $jp ?></td>
+                                <td class="fw-bold text-success bg-light">
+                                    JP <?= $jp ?>
+                                    <?php if (isset($jam_pelajaran[$jp])): ?>
+                                        <br><span class="text-muted" style="font-size: 0.7rem; font-weight: normal;"><?= e($jam_pelajaran[$jp]['start']) ?> - <?= e($jam_pelajaran[$jp]['end']) ?></span>
+                                    <?php endif; ?>
+                                </td>
                                 <?php foreach ($days as $d): ?>
                                     <td class="dashboard-cell p-2">
                                         <?php
