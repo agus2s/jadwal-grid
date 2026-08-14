@@ -16,6 +16,16 @@ $editRow = null;
 $editId = null;
 
 // ─────────────────────────────────────────────────
+// UPDATE SETTINGS
+// ─────────────────────────────────────────────────
+if (isset($_GET['update_settings'])) {
+    $show_time = isset($_POST['show_time']) ? true : false;
+    save_setting_show_time($show_time);
+    header("Location: jam_pelajaran.php");
+    exit;
+}
+
+// ─────────────────────────────────────────────────
 // HAPUS DATA
 // ─────────────────────────────────────────────────
 if (isset($_GET['delete'])) {
@@ -154,6 +164,26 @@ require __DIR__ . '/templates/header.php';
                     </a>
                 </li>
             </ul>
+        </div>
+    </div>
+
+    <!-- Card Setting Tampilkan Jam -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body py-3 d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-eye text-success" style="font-size: 1.2rem;"></i>
+                <label class="form-check-label fw-semibold mb-0" for="show_time" style="cursor: pointer;">
+                    Tampilkan Jam Mulai &amp; Selesai pada Jadwal
+                </label>
+            </div>
+            <form method="post" action="?update_settings=1" class="mb-0">
+                <div class="form-check form-switch mb-0">
+                    <input class="form-check-input" type="checkbox" id="show_time" name="show_time" value="1" 
+                           style="width: 2.5em; height: 1.25em; cursor: pointer;"
+                           <?= get_setting_show_time() ? 'checked' : '' ?> 
+                           onchange="this.form.submit()">
+                </div>
+            </form>
         </div>
     </div>
 

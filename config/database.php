@@ -63,3 +63,35 @@ function get_jam_pelajaran(): array
     }
     return $jam_pelajaran;
 }
+
+/**
+ * Mengambil setting show_time. Default true.
+ */
+function get_setting_show_time(): bool
+{
+    static $show_time = null;
+    if ($show_time === null) {
+        $path = __DIR__ . '/settings.json';
+        if (file_exists($path)) {
+            $settings = json_decode(file_get_contents($path), true);
+            $show_time = isset($settings['show_time']) ? (bool)$settings['show_time'] : true;
+        } else {
+            $show_time = true;
+        }
+    }
+    return $show_time;
+}
+
+/**
+ * Menyimpan setting show_time.
+ */
+function save_setting_show_time(bool $show): bool
+{
+    $path = __DIR__ . '/settings.json';
+    $settings = [];
+    if (file_exists($path)) {
+        $settings = json_decode(file_get_contents($path), true) ?? [];
+    }
+    $settings['show_time'] = $show;
+    return file_put_contents($path, json_encode($settings, JSON_PRETTY_PRINT)) !== false;
+}

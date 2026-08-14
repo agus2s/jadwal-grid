@@ -181,7 +181,7 @@ require __DIR__ . '/templates/header.php';
                         <tr>
                             <td class="fw-bold text-success bg-light">
                                 JP <?= $jp ?>
-                                <?php if (isset($jam_pelajaran[$jp])): ?>
+                                <?php if (get_setting_show_time() && isset($jam_pelajaran[$jp])): ?>
                                     <br><span class="text-muted" style="font-size: 0.7rem; font-weight: normal;"><?= e($jam_pelajaran[$jp]['start']) ?> - <?= e($jam_pelajaran[$jp]['end']) ?></span>
                                 <?php endif; ?>
                             </td>
@@ -240,7 +240,7 @@ require __DIR__ . '/templates/header.php';
                         <tr>
                             <td class="fw-bold text-success bg-light grid-sticky-col">
                                 JP <?= $jp ?>
-                                <?php if (isset($jam_pelajaran[$jp])): ?>
+                                <?php if (get_setting_show_time() && isset($jam_pelajaran[$jp])): ?>
                                     <br><span class="text-muted" style="font-size: 0.7rem; font-weight: normal;"><?= e($jam_pelajaran[$jp]['start']) ?> - <?= e($jam_pelajaran[$jp]['end']) ?></span>
                                 <?php endif; ?>
                             </td>
