@@ -167,8 +167,8 @@ if ($tab === 'rombel' && $selected_class_id) {
                                                 ?>
                                                 <div class="cell-entry text-start"
                                                      style="background: linear-gradient(135deg, <?= $entryColors['bg'] ?>, #ffffff); border-left-color: <?= $entryColors['badge'] ?>;">
-                                                    <strong style="color: <?= $entryColors['color'] ?>;"><?= e($r['subject_name']) ?></strong>
-                                                    <small style="color: <?= $entryColors['color'] ?>; opacity: .8;"><?= e($r['teacher_name']) ?></small>
+                                                    <strong style="color: #000;"><?= e($r['subject_name']) ?></strong>
+                                                        <small style="color: #000; opacity: .8;"><?= e($r['teacher_name']) ?></small>
                                                 </div>
                                                 <?php
                                                 break;
@@ -213,10 +213,10 @@ if ($tab === 'rombel' && $selected_class_id) {
                                                     ?>
                                                     <div class="cell-entry text-start"
                                                          style="background: linear-gradient(135deg, <?= $entryColors['bg'] ?>, #ffffff); border-left-color: <?= $entryColors['badge'] ?>;">
-                                                        <strong class="d-block" style="color: <?= $entryColors['color'] ?>;">
+                                                        <strong class="d-block" style="color: #000;">
                                                             <?= e($r['subject_name']) ?>
                                                         </strong>
-                                                        <small style="color: <?= $entryColors['color'] ?>; opacity: .8;"><i class="bi bi-person me-1"></i><?= e($r['teacher_name']) ?></small>
+                                                        <small style="color: #000; opacity: .8;"><i class="bi bi-person me-1"></i><?= e($r['teacher_name']) ?></small>
                                                     </div>
                                                     <?php
                                                 } else {
@@ -224,10 +224,10 @@ if ($tab === 'rombel' && $selected_class_id) {
                                                     ?>
                                                     <div class="cell-entry text-start"
                                                          style="background: linear-gradient(135deg, <?= $entryColors['bg'] ?>, #ffffff); border-left-color: <?= $entryColors['badge'] ?>;">
-                                                        <strong class="d-block" style="color: <?= $entryColors['color'] ?>;">
+                                                        <strong class="d-block" style="color: #000;">
                                                             <?= e($r['class_name']) ?>
                                                         </strong>
-                                                        <small style="color: <?= $entryColors['color'] ?>; opacity: .8;"><i class="bi bi-book me-1"></i><?= e($r['subject_name']) ?></small>
+                                                        <small style="color: #000; opacity: .8;"><i class="bi bi-book me-1"></i><?= e($r['subject_name']) ?></small>
                                                     </div>
                                                     <?php
                                                 }

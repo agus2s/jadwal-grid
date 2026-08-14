@@ -299,8 +299,8 @@ require __DIR__ . '/templates/header.php'; // Render header HTML
                                                  data-schedule-id="<?= (int) $r['id'] ?>"
                                                  style="background: linear-gradient(135deg, <?= $entryColors['bg'] ?>, #ffffff); border-left-color: <?= $entryColors['badge'] ?>;">
                                                 <div class="cell-content">
-                                                    <strong style="color: <?= $entryColors['color'] ?>;"><?= e($r['subject_name']) ?></strong>
-                                                    <small class="d-block" style="color: <?= $entryColors['color'] ?>; opacity: .8;"><?= e($r['teacher_name']) ?></small>
+                                                      <strong style="color: #000;"><?= e($r['subject_name']) ?></strong>
+                                                      <small class="d-block" style="color: #000; opacity: .8;"><?= e($r['teacher_name']) ?></small>
                                                 </div>
                                                 <a class="cell-delete-btn"
                                                    href="?delete=<?= (int) $r['id'] ?>"
